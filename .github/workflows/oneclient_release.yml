@@ -218,7 +218,7 @@ jobs:
           # the macOS metadata so signing + notarization actually run.
           CERT_ID="$CERT_ID" python3 - <<'PY'
           import os, re
-          p = "packages/oneclient_app/Cargo.toml"
+          p = "packages/zyro_app/Cargo.toml"
           s = open(p).read()
           ident = os.environ["CERT_ID"]
           hdr = "[package.metadata.packager.macos]"
@@ -233,9 +233,9 @@ jobs:
         shell: bash
         run: |
           if [ -n "${{ matrix.target }}" ]; then
-            cargo build --release --bin oneclient_app --target ${{ matrix.target }}
+            cargo build --release --bin zyro_app --target ${{ matrix.target }}
           else
-            cargo build --release --bin oneclient_app
+            cargo build --release --bin zyro_app
           fi
 
       - name: (macOS) Verify deployment target
@@ -243,7 +243,7 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          bin="target/${{ matrix.target }}/release/oneclient_app"
+          bin="target/${{ matrix.target }}/release/zyro_app"
           minos="$(vtool -show-build "$bin" | awk '/minos/ {print $2; exit}')"
           echo "linked minos=$minos, declared minimum=${{ matrix.macos_deployment_target }}"
           if [ "$(printf '%s\n%s\n' "$minos" "${{ matrix.macos_deployment_target }}" | sort -V | tail -n1)" != "${{ matrix.macos_deployment_target }}" ]; then
@@ -257,7 +257,7 @@ jobs:
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
         with:
           name: oneclient-windows-binary-unsigned
-          path: target/release/oneclient_app.exe
+          path: target/release/zyro_app.exe
 
       - name: (Windows) Submit SignPath signing request for app binary
         if: matrix.platform == 'windows-latest'
@@ -277,23 +277,23 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          signed="signed-bin/oneclient_app.exe"
+          signed="signed-bin/zyro_app.exe"
           if [ ! -e "$signed" ]; then
-            echo "::error::SignPath did not return signed-bin/oneclient_app.exe"
+            echo "::error::SignPath did not return signed-bin/zyro_app.exe"
             ls -R signed-bin || true
             exit 1
           fi
-          cp "$signed" target/release/oneclient_app.exe
+          cp "$signed" target/release/zyro_app.exe
 
       - name: (Windows) Verify app binary is signed
         if: matrix.platform == 'windows-latest'
         shell: pwsh
         run: |
-          $sig = Get-AuthenticodeSignature 'target/release/oneclient_app.exe'
+          $sig = Get-AuthenticodeSignature 'target/release/zyro_app.exe'
           Write-Host "Authenticode status: $($sig.Status)"
           Write-Host "Signer: $($sig.SignerCertificate.Subject)"
           if ($sig.Status -eq 'NotSigned') {
-            Write-Error 'oneclient_app.exe carries no Authenticode signature'
+            Write-Error 'zyro_app.exe carries no Authenticode signature'
             exit 1
           }
 
@@ -302,9 +302,9 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          out="packages/oneclient_app/icons/generated"
+          out="packages/zyro_app/icons/generated"
           mkdir -p "$out"
-          xcrun actool packages/oneclient_app/icons/OneClient.icon \
+          xcrun actool packages/zyro_app/icons/OneClient.icon \
             --compile "$out" \
             --app-icon OneClient \
             --output-partial-info-plist "$out/partial.plist" \
@@ -376,9 +376,9 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          cp target/release/.cargo-packager/deb/*/data/usr/share/applications/oneclient_app.desktop \
-             target/release/oneclient_app.desktop
-          cargo generate-rpm -p packages/oneclient_app
+          cp target/release/.cargo-packager/deb/*/data/usr/share/applications/zyro_app.desktop \
+             target/release/zyro_app.desktop
+          cargo generate-rpm -p packages/zyro_app
           cp target/generate-rpm/*.rpm "${{ steps.outdir.outputs.dir }}/"
 
       # Upload debug info (dSYM / .dwp / .pdb produced by the release profile's
@@ -402,8 +402,8 @@ jobs:
           export PATH="/usr/local/bin:$PATH"
           SYMS="$(mktemp -d)"
           shopt -s nullglob
-          for f in "$OUT_DIR"/oneclient_app "$OUT_DIR"/oneclient_app.exe \
-                   "$OUT_DIR"/oneclient_app.pdb "$OUT_DIR"/*.dwp "$OUT_DIR"/*.dSYM; do
+          for f in "$OUT_DIR"/zyro_app "$OUT_DIR"/zyro_app.exe \
+                   "$OUT_DIR"/zyro_app.pdb "$OUT_DIR"/*.dwp "$OUT_DIR"/*.dSYM; do
             [ -e "$f" ] || continue
             cp -R "$f" "$SYMS/"
           done
@@ -430,17 +430,17 @@ jobs:
           Write-Host '--- installed layout ---'
           Get-ChildItem -Recurse $dest | ForEach-Object { Write-Host $_.FullName }
 
-          if (-not (Test-Path "$dest\oneclient_app.exe")) {
-            Write-Error "oneclient_app.exe is not at the root of $dest"
+          if (-not (Test-Path "$dest\zyro_app.exe")) {
+            Write-Error "zyro_app.exe is not at the root of $dest"
             exit 1
           }
           foreach ($dll in @(Get-ChildItem 'target/crt/*.dll')) {
             if (-not (Test-Path (Join-Path $dest $dll.Name))) {
-              Write-Error "$($dll.Name) did not land beside oneclient_app.exe - cargo-packager put resources elsewhere, so app-local CRT loading will not work"
+              Write-Error "$($dll.Name) did not land beside zyro_app.exe - cargo-packager put resources elsewhere, so app-local CRT loading will not work"
               exit 1
             }
           }
-          Write-Host "OK: $($(Get-ChildItem 'target/crt/*.dll').Count) CRT DLLs sit beside oneclient_app.exe"
+          Write-Host "OK: $($(Get-ChildItem 'target/crt/*.dll').Count) CRT DLLs sit beside zyro_app.exe"
 
       - name: (Windows) Upload unsigned installer artifact
         if: matrix.platform == 'windows-latest'
@@ -527,7 +527,7 @@ jobs:
           fi
 
           # Same treatment for the .rpm (cargo-generate-rpm names it
-          # oneclient_app-<ver>-1.x86_64.rpm).
+          # zyro_app-<ver>-1.x86_64.rpm).
           rpm_unique=""
           rpm_matches=("$OUT_DIR"/*.rpm)
           if [ -e "${rpm_matches[0]:-}" ]; then

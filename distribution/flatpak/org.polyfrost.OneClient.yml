@@ -2,7 +2,7 @@ id: org.polyfrost.OneClient
 runtime: org.gnome.Platform
 runtime-version: '51'
 sdk: org.gnome.Sdk
-command: oneclient_app
+command: zyro_app
 finish-args:
   - --share=ipc
   - --share=network
@@ -38,13 +38,13 @@ modules:
     build-commands:
       - ar x oneclient.deb
       - tar xf data.tar.*
-      - install -Dm755 usr/bin/oneclient_app -t /app/bin
+      - install -Dm755 usr/bin/zyro_app -t /app/bin
       - |
         for dir in usr/share/icons/hicolor/*/; do
           size=$(basename "$dir" | cut -d@ -f1)
-          install -Dm644 "$dir/apps/oneclient_app.png" "/app/share/icons/hicolor/$size/apps/$FLATPAK_ID.png"
+          install -Dm644 "$dir/apps/zyro_app.png" "/app/share/icons/hicolor/$size/apps/$FLATPAK_ID.png"
         done
-      - sed -e "s|^Exec=.*|Exec=oneclient_app %u|" -e "s|^Icon=.*|Icon=$FLATPAK_ID|" usr/share/applications/oneclient_app.desktop > $FLATPAK_ID.desktop
+      - sed -e "s|^Exec=.*|Exec=zyro_app %u|" -e "s|^Icon=.*|Icon=$FLATPAK_ID|" usr/share/applications/zyro_app.desktop > $FLATPAK_ID.desktop
       - echo "MimeType=x-scheme-handler/oneclient;" >> $FLATPAK_ID.desktop
       - install -Dm644 $FLATPAK_ID.desktop -t /app/share/applications
       - install -Dm644 $FLATPAK_ID.metainfo.xml -t /app/share/metainfo

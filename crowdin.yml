@@ -4,7 +4,7 @@ base_path: .
 preserve_hierarchy: true
 
 files:
-  - source: /packages/oneclient_app/lang/en_us.json
+  - source: /packages/zyro_app/lang/en_us.json
     dest: /oneclient.json
     translation: /translations/%locale_with_underscore%/oneclient.json
     update_option: update_as_unapproved

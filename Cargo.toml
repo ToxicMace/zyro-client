@@ -20,19 +20,19 @@ version = "2.11.0"
 
 [workspace.dependencies]
 # core
-oneclient_auth = {path = "./packages/oneclient_auth"}
-oneclient_cluster = {path = "./packages/oneclient_cluster"}
-oneclient_common = {path = "./packages/oneclient_common"}
-oneclient_content = {path = "./packages/oneclient_content"}
-oneclient_core = {path = "./packages/oneclient_core"}
-oneclient_db = {path = "./packages/oneclient_db"}
-oneclient_discord = {path = "./packages/oneclient_discord"}
-oneclient_events = {path = "./packages/oneclient_events"}
-oneclient_java = {path = "./packages/oneclient_java"}
-oneclient_macro = {path = "./packages/oneclient_macro"}
-oneclient_mc = {path = "./packages/oneclient_mc"}
-oneclient_net = {path = "./packages/oneclient_net"}
-oneclient_polyplus = {path = "./packages/oneclient_polyplus"}
+zyro_auth = {path = "./packages/zyro_auth"}
+zyro_cluster = {path = "./packages/zyro_cluster"}
+zyro_common = {path = "./packages/zyro_common"}
+zyro_content = {path = "./packages/zyro_content"}
+zyro_core = {path = "./packages/zyro_core"}
+zyro_db = {path = "./packages/zyro_db"}
+zyro_discord = {path = "./packages/zyro_discord"}
+zyro_events = {path = "./packages/zyro_events"}
+zyro_java = {path = "./packages/zyro_java"}
+zyro_macro = {path = "./packages/zyro_macro"}
+zyro_mc = {path = "./packages/zyro_mc"}
+zyro_net = {path = "./packages/zyro_net"}
+zyro_polyplus = {path = "./packages/zyro_polyplus"}
 polyio = {path = "./packages/polyio"}
 
 # core (extra)

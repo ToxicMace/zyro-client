@@ -1,4 +1,4 @@
-﻿"""Zyro Client branding generator.
+"""Zyro Client branding generator.
 
 Builds every logo/icon asset the launcher needs from one geometric source:
 the "Z-bolt" mark (a bold Z whose diagonal is a lightning bolt) and a
@@ -20,7 +20,7 @@ from fontTools.ttLib import TTFont
 from PIL import Image, ImageChops, ImageDraw, ImageFilter
 
 ROOT = Path(__file__).resolve().parent.parent
-APP = ROOT / "packages" / "oneclient_app"
+APP = ROOT / "packages" / "zyro_app"
 ICONS = APP / "icons"
 ASSETS = APP / "assets"
 OUT = ROOT / "branding" / "out"

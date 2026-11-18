@@ -47,10 +47,10 @@ To make changes locally, follow these steps:
 
 ### Running
 
-The app crate is `oneclient_app`:
+The app crate is `zyro_app`:
 
-- `cargo run -p oneclient_app` - Runs the **OneClient** desktop application.
-- `cargo build --release -p oneclient_app` - Builds an optimized release binary.
+- `cargo run -p zyro_app` - Runs the **OneClient** desktop application.
+- `cargo build --release -p zyro_app` - Builds an optimized release binary.
 
 After you finish making your changes and committed them to your branch, run
 `cargo fmt` and `cargo clippy` to fix style inconsistencies and catch lints.
@@ -58,11 +58,11 @@ After you finish making your changes and committed them to your branch, run
 ### Packaging
 
 Installers are built with [cargo-packager] (config in
-`packages/oneclient_app/Cargo.toml` under `[package.metadata.packager]`):
+`packages/zyro_app/Cargo.toml` under `[package.metadata.packager]`):
 
 - `cargo install cargo-packager --locked`
-- `cargo build --release -p oneclient_app`
-- `cargo packager --release -p oneclient_app --formats <nsis|app,dmg|deb,appimage>`
+- `cargo build --release -p zyro_app`
+- `cargo packager --release -p zyro_app --formats <nsis|app,dmg|deb,appimage>`
 
 Releases are cut by dispatching the `OneClient Release Build` GitHub Actions
 workflow. See the **Packaging / Releasing** section of the [README] for details

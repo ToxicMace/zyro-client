@@ -68,10 +68,10 @@ The project targets **Rust 1.97** or later. You can install Rust via [rustup](ht
 
 ```sh
 # Run the app
-cargo run -p oneclient_app
+cargo run -p zyro_app
 
 # Build a release binary
-cargo build -p oneclient_app --release
+cargo build -p zyro_app --release
 ```
 
 
@@ -79,15 +79,15 @@ cargo build -p oneclient_app --release
 
 Installers are produced with [**cargo-packager**](https://github.com/crabnebula-dev/cargo-packager)
 (the standalone bundler spun out of the Tauri bundler). Config lives in
-[`packages/oneclient_app/Cargo.toml`](./packages/oneclient_app/Cargo.toml) under
+[`packages/zyro_app/Cargo.toml`](./packages/zyro_app/Cargo.toml) under
 `[package.metadata.packager]`.
 
 ```sh
 cargo install cargo-packager --locked
 
 # Build the binary, then bundle it for the current OS:
-cargo build --release -p oneclient_app
-cargo packager --release -p oneclient_app --formats <targets>
+cargo build --release -p zyro_app
+cargo packager --release -p zyro_app --formats <targets>
 #   Windows: nsis      macOS: app,dmg      Linux: deb,appimage
 ```
 

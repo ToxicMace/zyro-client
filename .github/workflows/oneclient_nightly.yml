@@ -97,9 +97,9 @@ jobs:
         shell: bash
         run: |
           if [ -n "${{ matrix.target }}" ]; then
-            cargo build --release --bin oneclient_app --target ${{ matrix.target }}
+            cargo build --release --bin zyro_app --target ${{ matrix.target }}
           else
-            cargo build --release --bin oneclient_app
+            cargo build --release --bin zyro_app
           fi
 
       - name: (macOS) Verify deployment target
@@ -107,7 +107,7 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          bin="target/${{ matrix.target }}/release/oneclient_app"
+          bin="target/${{ matrix.target }}/release/zyro_app"
           minos="$(vtool -show-build "$bin" | awk '/minos/ {print $2; exit}')"
           echo "linked minos=$minos, declared minimum=${{ matrix.macos_deployment_target }}"
           if [ "$(printf '%s\n%s\n' "$minos" "${{ matrix.macos_deployment_target }}" | sort -V | tail -n1)" != "${{ matrix.macos_deployment_target }}" ]; then
@@ -120,9 +120,9 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          out="packages/oneclient_app/icons/generated"
+          out="packages/zyro_app/icons/generated"
           mkdir -p "$out"
-          xcrun actool packages/oneclient_app/icons/OneClient.icon \
+          xcrun actool packages/zyro_app/icons/OneClient.icon \
             --compile "$out" \
             --app-icon OneClient \
             --output-partial-info-plist "$out/partial.plist" \
@@ -189,9 +189,9 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          cp target/release/.cargo-packager/deb/*/data/usr/share/applications/oneclient_app.desktop \
-             target/release/oneclient_app.desktop
-          cargo generate-rpm -p packages/oneclient_app
+          cp target/release/.cargo-packager/deb/*/data/usr/share/applications/zyro_app.desktop \
+             target/release/zyro_app.desktop
+          cargo generate-rpm -p packages/zyro_app
           cp target/generate-rpm/*.rpm "${{ steps.outdir.outputs.dir }}/"
 
       - name: (Windows) Smoke-test installer layout
@@ -209,17 +209,17 @@ jobs:
           Write-Host '--- installed layout ---'
           Get-ChildItem -Recurse $dest | ForEach-Object { Write-Host $_.FullName }
 
-          if (-not (Test-Path "$dest\oneclient_app.exe")) {
-            Write-Error "oneclient_app.exe is not at the root of $dest"
+          if (-not (Test-Path "$dest\zyro_app.exe")) {
+            Write-Error "zyro_app.exe is not at the root of $dest"
             exit 1
           }
           foreach ($dll in @(Get-ChildItem 'target/crt/*.dll')) {
             if (-not (Test-Path (Join-Path $dest $dll.Name))) {
-              Write-Error "$($dll.Name) did not land beside oneclient_app.exe - cargo-packager put resources elsewhere, so app-local CRT loading will not work"
+              Write-Error "$($dll.Name) did not land beside zyro_app.exe - cargo-packager put resources elsewhere, so app-local CRT loading will not work"
               exit 1
             }
           }
-          Write-Host "OK: $($(Get-ChildItem 'target/crt/*.dll').Count) CRT DLLs sit beside oneclient_app.exe"
+          Write-Host "OK: $($(Get-ChildItem 'target/crt/*.dll').Count) CRT DLLs sit beside zyro_app.exe"
 
       # Upload debug info (dSYM / .dwp / .pdb produced by the release profile's
       # split-debuginfo) to Sentry so nightly crash reports get real file/function/
@@ -244,8 +244,8 @@ jobs:
           export PATH="/usr/local/bin:$PATH"
           SYMS="$(mktemp -d)"
           shopt -s nullglob
-          for f in "$OUT_DIR"/oneclient_app "$OUT_DIR"/oneclient_app.exe \
-                   "$OUT_DIR"/oneclient_app.pdb "$OUT_DIR"/*.dwp "$OUT_DIR"/*.dSYM; do
+          for f in "$OUT_DIR"/zyro_app "$OUT_DIR"/zyro_app.exe \
+                   "$OUT_DIR"/zyro_app.pdb "$OUT_DIR"/*.dwp "$OUT_DIR"/*.dSYM; do
             [ -e "$f" ] || continue
             cp -R "$f" "$SYMS/"
           done
@@ -268,10 +268,10 @@ jobs:
             cp "$f" dist/
           done
           # Raw executable, renamed per platform so the unzipped uploads don't collide.
-          bin="${{ steps.outdir.outputs.dir }}/oneclient_app"
+          bin="${{ steps.outdir.outputs.dir }}/zyro_app"
           ext=""
           [ -e "$bin.exe" ] && ext=".exe"
-          cp "$bin$ext" "dist/oneclient_app-${{ matrix.os_key }}-${{ matrix.arch }}$ext"
+          cp "$bin$ext" "dist/zyro_app-${{ matrix.os_key }}-${{ matrix.arch }}$ext"
           if [ -z "$(ls -A dist)" ]; then
             echo "::error::No installers found in ${{ steps.outdir.outputs.dir }}"
             exit 1
@@ -281,7 +281,7 @@ jobs:
       - name: Upload unsigned executable
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
-          path: dist/oneclient_app-${{ matrix.os_key }}-${{ matrix.arch }}*
+          path: dist/zyro_app-${{ matrix.os_key }}-${{ matrix.arch }}*
           archive: false
           if-no-files-found: error
           retention-days: 14

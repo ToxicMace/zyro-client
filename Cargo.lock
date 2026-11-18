@@ -4638,7 +4638,7 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "9f7c3e4beb33f85d45ae3e3a1792185706c8e16d043238c593331cc7cd313b50"
 
 [[package]]
-name = "oneclient_app"
+name = "zyro_app"
 version = "2.11.0"
 dependencies = [
  "accesskit",
@@ -4660,18 +4660,18 @@ dependencies = [
  "inventory",
  "mimalloc",
  "notify",
- "oneclient_auth",
- "oneclient_cluster",
- "oneclient_common",
- "oneclient_content",
- "oneclient_core",
- "oneclient_db",
- "oneclient_events",
- "oneclient_java",
- "oneclient_macro",
- "oneclient_mc",
- "oneclient_net",
- "oneclient_polyplus",
+ "zyro_auth",
+ "zyro_cluster",
+ "zyro_common",
+ "zyro_content",
+ "zyro_core",
+ "zyro_db",
+ "zyro_events",
+ "zyro_java",
+ "zyro_macro",
+ "zyro_mc",
+ "zyro_net",
+ "zyro_polyplus",
  "open",
  "percent-encoding",
  "plusrenderer",
@@ -4695,15 +4695,15 @@ dependencies = [
 ]
 
 [[package]]
-name = "oneclient_auth"
+name = "zyro_auth"
 version = "2.11.0"
 dependencies = [
  "base64 0.23.1",
  "chrono",
  "md-5",
- "oneclient_common",
- "oneclient_events",
- "oneclient_net",
+ "zyro_common",
+ "zyro_events",
+ "zyro_net",
  "polyio",
  "rand 0.10.3",
  "reqwest 0.13.5",
@@ -4719,15 +4719,15 @@ dependencies = [
 ]
 
 [[package]]
-name = "oneclient_cluster"
+name = "zyro_cluster"
 version = "2.11.0"
 dependencies = [
  "bytes 1.12.1",
  "chrono",
  "image",
- "oneclient_common",
- "oneclient_db",
- "oneclient_net",
+ "zyro_common",
+ "zyro_db",
+ "zyro_net",
  "polyio",
  "regex",
  "reqwest 0.13.5",
@@ -4743,7 +4743,7 @@ dependencies = [
 ]
 
 [[package]]
-name = "oneclient_common"
+name = "zyro_common"
 version = "2.11.0"
 dependencies = [
  "directories",
@@ -4756,7 +4756,7 @@ dependencies = [
 ]
 
 [[package]]
-name = "oneclient_content"
+name = "zyro_content"
 version = "2.11.0"
 dependencies = [
  "async-trait",
@@ -4765,10 +4765,10 @@ dependencies = [
  "futures-lite",
  "futures-util",
  "htmd",
- "oneclient_common",
- "oneclient_db",
- "oneclient_events",
- "oneclient_net",
+ "zyro_common",
+ "zyro_db",
+ "zyro_events",
+ "zyro_net",
  "polyio",
  "pulldown-cmark",
  "reqwest 0.13.5",
@@ -4784,7 +4784,7 @@ dependencies = [
 ]
 
 [[package]]
-name = "oneclient_core"
+name = "zyro_core"
 version = "2.11.0"
 dependencies = [
  "async-compression",
@@ -4808,17 +4808,17 @@ dependencies = [
  "interfrost",
  "libc",
  "md-5",
- "oneclient_auth",
- "oneclient_cluster",
- "oneclient_common",
- "oneclient_content",
- "oneclient_db",
- "oneclient_discord",
- "oneclient_events",
- "oneclient_java",
- "oneclient_mc",
- "oneclient_net",
- "oneclient_polyplus",
+ "zyro_auth",
+ "zyro_cluster",
+ "zyro_common",
+ "zyro_content",
+ "zyro_db",
+ "zyro_discord",
+ "zyro_events",
+ "zyro_java",
+ "zyro_mc",
+ "zyro_net",
+ "zyro_polyplus",
  "parking_lot",
  "polyio",
  "rand 0.10.3",
@@ -4849,7 +4849,7 @@ dependencies = [
 ]
 
 [[package]]
-name = "oneclient_db"
+name = "zyro_db"
 version = "2.11.0"
 dependencies = [
  "async-tempfile",
@@ -4864,19 +4864,19 @@ dependencies = [
 ]
 
 [[package]]
-name = "oneclient_discord"
+name = "zyro_discord"
 version = "2.11.0"
 dependencies = [
  "chrono",
  "discord-rich-presence",
- "oneclient_common",
+ "zyro_common",
  "tokio",
  "tracing",
  "tracing-subscriber",
 ]
 
 [[package]]
-name = "oneclient_events"
+name = "zyro_events"
 version = "2.11.0"
 dependencies = [
  "thiserror 2.0.21",
@@ -4886,7 +4886,7 @@ dependencies = [
 ]
 
 [[package]]
-name = "oneclient_java"
+name = "zyro_java"
 version = "2.11.0"
 dependencies = [
  "astral-tokio-tar",
@@ -4895,9 +4895,9 @@ dependencies = [
  "async_zip",
  "futures-lite",
  "futures-util",
- "oneclient_common",
- "oneclient_events",
- "oneclient_net",
+ "zyro_common",
+ "zyro_events",
+ "zyro_net",
  "polyio",
  "reqwest 0.13.5",
  "serde",
@@ -4909,7 +4909,7 @@ dependencies = [
 ]
 
 [[package]]
-name = "oneclient_macro"
+name = "zyro_macro"
 version = "2.11.0"
 dependencies = [
  "proc-macro2",
@@ -4918,16 +4918,16 @@ dependencies = [
 ]
 
 [[package]]
-name = "oneclient_mc"
+name = "zyro_mc"
 version = "2.11.0"
 dependencies = [
  "base64 0.23.1",
  "chrono",
  "futures-util",
  "interfrost",
- "oneclient_common",
- "oneclient_events",
- "oneclient_net",
+ "zyro_common",
+ "zyro_events",
+ "zyro_net",
  "polyio",
  "reqwest 0.13.5",
  "serde",
@@ -4940,7 +4940,7 @@ dependencies = [
 ]
 
 [[package]]
-name = "oneclient_net"
+name = "zyro_net"
 version = "2.11.0"
 dependencies = [
  "arc-swap",
@@ -4948,8 +4948,8 @@ dependencies = [
  "bytes 1.12.1",
  "futures-lite",
  "futures-util",
- "oneclient_common",
- "oneclient_events",
+ "zyro_common",
+ "zyro_events",
  "polyio",
  "reqwest 0.13.5",
  "serde",
@@ -4962,7 +4962,7 @@ dependencies = [
 ]
 
 [[package]]
-name = "oneclient_polyplus"
+name = "zyro_polyplus"
 version = "2.11.0"
 dependencies = [
  "async-tungstenite 0.35.0",
@@ -4970,10 +4970,10 @@ dependencies = [
  "chrono",
  "futures-util",
  "image",
- "oneclient_auth",
- "oneclient_common",
- "oneclient_events",
- "oneclient_net",
+ "zyro_auth",
+ "zyro_common",
+ "zyro_events",
+ "zyro_net",
  "polyio",
  "rand 0.10.3",
  "reqwest 0.13.5",

@@ -88,7 +88,7 @@ EXACT: dict[str, list[tuple[str, str]]] = {
     ],
     "zyro_app/build.rs": [
         ('"Polyfrost Inc."', '"Zyro"'),
-        ('"© 2026 Polyfrost Inc."', '"© 2026 Zyro. Based on OneLauncher © Polyfrost (GPL-3.0)"'),
+        ('"Â© 2026 Polyfrost Inc."', '"Â© 2026 Zyro. Based on OneLauncher Â© Polyfrost (GPL-3.0)"'),
         ('res.set("ProductName", "OneClient");', 'res.set("ProductName", "Zyro Client");'),
         ('res.set("FileDescription", "OneClient");', 'res.set("FileDescription", "Zyro Client");'),
     ],
@@ -154,7 +154,7 @@ def rebrand_lang(path: Path) -> None:
         if new != value:
             data[key] = new
             changed += 1
-    path.write_text(json.dumps(data, ensure_ascii=False, indent="\t") + "\n", encoding="utf-8")
+    path.write_text(json.dumps(data, ensure_ascii=False, indent=2) + "\n", encoding="utf-8", newline="\n")
     print(f"lang: {changed} values rebranded in {path.name}")
 
 

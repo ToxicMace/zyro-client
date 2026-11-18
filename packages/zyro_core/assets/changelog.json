@@ -1,0 +1,6 @@
+[
+  {
+    "version": "1.0.0",
+    "body": "## Zyro Client 1.0\n\n- New Zyro identity: Z-bolt icon, wordmark and splash.\n- Zyro theme families: **Zyro** (dark and light), **Void** (AMOLED), **Aurora**, **Ember** and **Sakura**.\n- Quick accent swatches next to the accent color picker.\n- Navbar logo follows your accent color.\n- **Zyro HUD** mod: FPS, CPS, keystrokes, coordinates, armor and more, with per-element colors, chroma, background opacity and drag-to-move editor (Right Shift in game).\n- Upstream telemetry and auto-updates are off by default.\n\nZyro Client is a fork of OneLauncher by Polyfrost, licensed under GPL-3.0."
+  }
+]
