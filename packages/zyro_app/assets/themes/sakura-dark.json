@@ -1,0 +1,15 @@
+{
+  "name": "Sakura Dark",
+  "radius_scale": 1.45,
+  "colors": {
+    "light": false,
+    "page": "#140F15",
+    "page_elevated": "#1A141C",
+    "card": "#211823",
+    "component": "#281D2A",
+    "border": "#FFFFFF14",
+    "text": "#F7E6F1",
+    "text_secondary": "#9D8597",
+    "accent": "#F472B6"
+  }
+}

@@ -93,9 +93,10 @@ fn navbar_left(show_logo: bool, over_art: bool) -> impl IntoElement {
             el.padding(Gaps::new(0., NAV_LINK_SPACING_PX, 0., 0.))
         })
         .child(
+            // Zyro: the mark follows the user's accent color.
             Icon::new(IconType::IconLogo)
                 .size(COMPACT_LOGO_PX)
-                .color(primary_color(over_art))
+                .color(theme::colors::brand())
                 .into_element(),
         )
         .maybe(show_logo, |rect| {
@@ -137,16 +138,28 @@ fn navbar_center(is_small: bool) -> impl IntoElement {
     let over_art = matches!(route, Route::Home {});
     let browse_target = browse_target();
 
-    rect()
+    // Zyro: the links live in a floating glass dock instead of loose tabs.
+    let dock = rect()
         .horizontal()
-        .width(Size::flex(1.0))
-        .main_align(if is_small {
-            Alignment::Start
-        } else {
-            Alignment::Center
-        })
         .cross_align(Alignment::Center)
-        .spacing(if is_small { 12. } else { 4. })
+        .spacing(2.)
+        .padding(4.)
+        .corner_radius(CornerRadius::new_all(999.))
+        .background(if over_art {
+            Color::from_argb(110, 8, 10, 18)
+        } else {
+            theme::colors::card().with_a(235)
+        })
+        .border(
+            Border::new()
+                .fill(if over_art {
+                    Color::from_argb(34, 255, 255, 255)
+                } else {
+                    theme::colors::component_border()
+                })
+                .width(1.)
+                .alignment(BorderAlignment::Inner),
+        )
         .child(NavLink {
             active: route == Route::Home {},
             target: NavTarget::Route(Route::Home {}),
@@ -171,12 +184,23 @@ fn navbar_center(is_small: bool) -> impl IntoElement {
             nav_label: t("oneclient.components.navbar.browse"),
             over_art,
         })
-        .child(NavLink {
+        .maybe_child(crate::constants::POLYPLUS_FEATURES.then(|| NavLink {
             active: route == Route::Wardrobe {},
             target: NavTarget::Route(Route::Wardrobe {}),
             nav_label: t("oneclient.components.navbar.wardrobe"),
             over_art,
+        }));
+
+    rect()
+        .horizontal()
+        .width(Size::flex(1.0))
+        .main_align(if is_small {
+            Alignment::Start
+        } else {
+            Alignment::Center
         })
+        .cross_align(Alignment::Center)
+        .child(dock)
 }
 
 /// Falls back active cluster then most recently played then Versions when none exist
@@ -219,14 +243,16 @@ impl Component for NavLink {
         let nav_label = self.nav_label;
         let over_art = self.over_art;
 
-        let color = if active || hovering() || focused().is_focused() {
+        let color = if active {
+            theme::colors::on_brand_strong()
+        } else if hovering() || focused().is_focused() {
             primary_color(over_art)
         } else {
             secondary_color(over_art)
         };
 
         let background = if active {
-            theme::colors::ghost_overlay()
+            theme::colors::brand()
         } else if hovering() || focused().is_focused() {
             theme::colors::ghost_overlay_hover()
         } else {
@@ -237,18 +263,10 @@ impl Component for NavLink {
             .horizontal()
             .main_align(Alignment::Center)
             .cross_align(Alignment::Center)
-            .height(Size::px(36.))
-            .width(Size::px(nav_label.len() as f32 * 10. + 34.))
-            .corner_radius(rounded(10.))
+            .height(Size::px(32.))
+            .width(Size::px(nav_label.len() as f32 * 8.5 + 32.))
+            .corner_radius(CornerRadius::new_all(999.))
             .background(background)
-            .maybe(active, |el| {
-                el.border(
-                    Border::new()
-                        .fill(theme::colors::component_border())
-                        .width(1.)
-                        .alignment(BorderAlignment::Inner),
-                )
-            })
             .a11y_id(a11y_id)
             .a11y_focusable(true)
             .a11y_role(AccessibilityRole::Button)
@@ -267,11 +285,11 @@ impl Component for NavLink {
             .child(
                 label()
                     .text(nav_label)
-                    .font_size(text_size(16.))
+                    .font_size(text_size(14.))
                     .font_weight(if active {
-                        FontWeight::MEDIUM
+                        FontWeight::SEMI_BOLD
                     } else {
-                        FontWeight::NORMAL
+                        FontWeight::MEDIUM
                     })
                     .color(color),
             )
@@ -323,7 +341,7 @@ impl Component for NavbarRight {
             .main_align(Alignment::End)
             .cross_align(Alignment::Center)
             .spacing(8.)
-            .maybe_child(chat_allowed.then(|| {
+            .maybe_child((chat_allowed && crate::constants::POLYPLUS_FEATURES).then(|| {
                 super::navbar_button(foreground)
                     .tooltip(t("oneclient.components.navbar.social"))
                     .enabled(has_account)

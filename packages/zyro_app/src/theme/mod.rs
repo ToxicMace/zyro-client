@@ -15,14 +15,34 @@ pub mod colors;
 
 pub const NAVBAR_HEIGHT_PX: f32 = 80.;
 pub const HOME_PADDING_PX: f32 = 48.;
-pub const DEFAULT_FONT: &str = "Poppins";
+pub const DEFAULT_FONT: &str = "Inter";
+const POPPINS_FONT: &str = "Poppins";
 pub const MONO_FONT: &str = "JetBrains Mono";
 const MINECRAFT_FONT: &str = "Minecraft";
 const PIXEL_BOOST_MAX: f32 = 2.5;
 const PIXEL_BOOST_END: f32 = 17.;
 const PIXEL_BOOST_RANGE: f32 = 8.;
 
-const BUILTIN_THEMES: [&str; 4] = ["dark", "light", "minecraft-dark", "minecraft-light"];
+const BUILTIN_THEMES: [&str; 9] = [
+    "dark",
+    "light",
+    "void-dark",
+    "aurora-dark",
+    "ember-dark",
+    "sakura-dark",
+    "sakura-light",
+    "minecraft-dark",
+    "minecraft-light",
+];
+
+/// Width / height of assets/logo.svg (see branding/generate.py).
+pub const WORDMARK_RATIO: f32 = 3.125;
+
+/// One-click accent swatches shown next to the accent picker (Zyro palette first).
+pub const ACCENT_SWATCHES: [&str; 10] = [
+    "#4C6EF5", "#22D3EE", "#8B5CF6", "#2DD4BF", "#4ADE80", "#FACC15", "#FF6B3D", "#F43F5E",
+    "#F472B6", "#E2E8F0",
+];
 
 thread_local! {
     static THEMES: RefCell<Vec<Rc<Theme>>> =
@@ -129,7 +149,8 @@ pub fn theme_display_name(id: &str) -> String {
 
 pub fn resolve_theme(id: &str) -> Rc<Theme> {
     let id = match id {
-        "amoled" | "grey" => "dark",
+        "amoled" => "void-dark",
+        "grey" => "dark",
         "white" => "light",
         id => id,
     };
@@ -212,7 +233,7 @@ pub fn pixel_font_size_of(family: &str) -> Option<f32> {
 }
 
 pub fn font_families() -> Vec<String> {
-    let mut families: Vec<String> = [DEFAULT_FONT, MONO_FONT, MINECRAFT_FONT]
+    let mut families: Vec<String> = [DEFAULT_FONT, POPPINS_FONT, MONO_FONT, MINECRAFT_FONT]
         .into_iter()
         .map(str::to_string)
         .chain(
@@ -328,12 +349,16 @@ pub fn wordmark(width: f32, height: f32, color: Color) -> Element {
             .color(color)
             .into_element();
     }
+    // Zyro: the all-caps wordmark reads heavier than the old mixed-case one, so it sits a bit
+    // smaller than its slot and keeps its own aspect ratio.
+    let _ = width;
+    let height = height * 0.72;
     SvgViewer::new((
         "logo.svg",
         AppAssets::get_bytes("logo.svg").unwrap_or_default(),
     ))
     .show_loader(false)
-    .width(Size::px(width))
+    .width(Size::px(height * WORDMARK_RATIO))
     .height(Size::px(height))
     .color(color)
     .into_element()
@@ -348,17 +373,24 @@ pub fn rounded(radius: f32) -> CornerRadius {
 }
 
 pub fn load_fonts() -> Vec<(Cow<'static, str>, Bytes)> {
-    const FONTS: [(&str, &str); 13] = [
-        (DEFAULT_FONT, "fonts/Poppins/Poppins-Bold.ttf"),
-        (DEFAULT_FONT, "fonts/Poppins/Poppins-BoldItalic.ttf"),
-        (DEFAULT_FONT, "fonts/Poppins/Poppins-SemiBold.ttf"),
-        (DEFAULT_FONT, "fonts/Poppins/Poppins-SemiBoldItalic.ttf"),
-        (DEFAULT_FONT, "fonts/Poppins/Poppins-Medium.ttf"),
-        (DEFAULT_FONT, "fonts/Poppins/Poppins-MediumItalic.ttf"),
-        (DEFAULT_FONT, "fonts/Poppins/Poppins-Regular.ttf"),
-        (DEFAULT_FONT, "fonts/Poppins/Poppins-Italic.ttf"),
-        (DEFAULT_FONT, "fonts/Poppins/Poppins-Light.ttf"),
-        (DEFAULT_FONT, "fonts/Poppins/Poppins-LightItalic.ttf"),
+    // Zyro: Inter is the house font; Poppins stays available to themes ("font": "Poppins").
+    const FONTS: [(&str, &str); 19] = [
+        (DEFAULT_FONT, "fonts/Inter/Inter-Bold.ttf"),
+        (DEFAULT_FONT, "fonts/Inter/Inter-BoldItalic.ttf"),
+        (DEFAULT_FONT, "fonts/Inter/Inter-ExtraBold.ttf"),
+        (DEFAULT_FONT, "fonts/Inter/Inter-SemiBold.ttf"),
+        (DEFAULT_FONT, "fonts/Inter/Inter-SemiBoldItalic.ttf"),
+        (DEFAULT_FONT, "fonts/Inter/Inter-Medium.ttf"),
+        (DEFAULT_FONT, "fonts/Inter/Inter-MediumItalic.ttf"),
+        (DEFAULT_FONT, "fonts/Inter/Inter-Regular.ttf"),
+        (DEFAULT_FONT, "fonts/Inter/Inter-Italic.ttf"),
+        (DEFAULT_FONT, "fonts/Inter/Inter-Light.ttf"),
+        (DEFAULT_FONT, "fonts/Inter/Inter-LightItalic.ttf"),
+        (POPPINS_FONT, "fonts/Poppins/Poppins-Bold.ttf"),
+        (POPPINS_FONT, "fonts/Poppins/Poppins-SemiBold.ttf"),
+        (POPPINS_FONT, "fonts/Poppins/Poppins-Medium.ttf"),
+        (POPPINS_FONT, "fonts/Poppins/Poppins-Regular.ttf"),
+        (POPPINS_FONT, "fonts/Poppins/Poppins-Light.ttf"),
         (MONO_FONT, "fonts/JetBrainsMono/JetBrainsMonoVariable.ttf"),
         (MINECRAFT_FONT, "fonts/Minecraft/Minecraft-Regular.otf"),
         (MINECRAFT_FONT, "fonts/Minecraft/Minecraft-Bold.otf"),

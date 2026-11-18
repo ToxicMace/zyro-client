@@ -1,0 +1,20 @@
+{
+  "schemaVersion": 1,
+  "id": "zyrohud",
+  "version": "${version}",
+  "name": "Zyro HUD",
+  "description": "Clean, fully themeable HUD for Zyro Client: FPS, CPS, keystrokes, coordinates, armor, ping, speed and clock. Press Right Shift in game to edit.",
+  "authors": ["Zyro"],
+  "license": "GPL-3.0-only",
+  "icon": "assets/zyrohud/icon.png",
+  "environment": "client",
+  "entrypoints": {
+    "client": ["dev.zyro.hud.ZyroHud"]
+  },
+  "depends": {
+    "fabricloader": ">=0.17.0",
+    "minecraft": "~1.21.11",
+    "java": ">=21",
+    "fabric-api": "*"
+  }
+}

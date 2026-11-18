@@ -1,0 +1,15 @@
+{
+  "name": "Ember Dark",
+  "radius_scale": 1.45,
+  "colors": {
+    "light": false,
+    "page": "#120D0C",
+    "page_elevated": "#181110",
+    "card": "#1E1614",
+    "component": "#251B18",
+    "border": "#FFFFFF14",
+    "text": "#FBE9E2",
+    "text_secondary": "#9B827A",
+    "accent": "#FF6B3D"
+  }
+}

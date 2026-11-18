@@ -95,6 +95,66 @@ impl Component for ActiveClusterPanel {
         let syncing = launch_syncing(&launcher, cluster.uses_bundles());
         let shared_dir_taken = shared_dir_taken(&game, &sorted, cluster_id);
 
+        // Zyro hero: status chip, big title and actions on a soft glass card.
+        let eyebrow = rect()
+            .horizontal()
+            .cross_align(Alignment::Center)
+            .spacing(8.)
+            .padding(Gaps::new_symmetric(5., 12.))
+            .corner_radius(CornerRadius::new_all(999.))
+            .background(Color::from_argb(70, 255, 255, 255))
+            .child(
+                rect()
+                    .width(Size::px(7.))
+                    .height(Size::px(7.))
+                    .corner_radius(CornerRadius::new_all(4.))
+                    .background(colors::brand()),
+            )
+            .child(
+                label()
+                    .text(subtitle.to_uppercase())
+                    .max_lines(1)
+                    .font_size(text_size(11.))
+                    .font_weight(FontWeight::SEMI_BOLD)
+                    .color(colors::on_art()),
+            );
+
+        let card = rect()
+            .vertical()
+            .spacing(14.)
+            .padding(Gaps::new(24., 30., 26., 28.))
+            .corner_radius(CornerRadius::new_all(26.))
+            .background(Color::from_argb(105, 8, 10, 18))
+            .border(
+                Border::new()
+                    .fill(Color::from_argb(30, 255, 255, 255))
+                    .width(1.)
+                    .alignment(BorderAlignment::Inner),
+            )
+            .child(eyebrow)
+            .child(
+                label()
+                    .text(title)
+                    .max_lines(1)
+                    .text_overflow(TextOverflow::Ellipsis)
+                    .font_size(text_size(58.))
+                    .line_height(1.05)
+                    .font_weight(FontWeight::EXTRA_BOLD)
+                    .color(colors::on_art()),
+            )
+            .child(
+                rect()
+                    .horizontal()
+                    .spacing(10.)
+                    .cross_align(Alignment::Center)
+                    .child(launch_button(
+                        cluster_id,
+                        dispatch,
+                        launch_button_state(&game, cluster_id, syncing, shared_dir_taken),
+                    ))
+                    .child(cluster_settings_button(cluster_id)),
+            );
+
         rect()
             .vertical()
             .width(Size::fill())
@@ -102,37 +162,7 @@ impl Component for ActiveClusterPanel {
             .cross_align(Alignment::Start)
             .offset_x(slide_x)
             .opacity(p)
-            .child(
-                label()
-                    .text(title)
-                    .width(Size::fill())
-                    .max_lines(1)
-                    .text_overflow(TextOverflow::Ellipsis)
-                    .font_size(text_size(56.))
-                    .line_height(1.1)
-                    .font_weight(FontWeight::BOLD)
-                    .color(colors::on_art()),
-            )
-            .child(
-                label()
-                    .text(subtitle)
-                    .font_size(text_size(16.))
-                    .font_weight(FontWeight::SEMI_BOLD)
-                    .color(colors::on_art_secondary()),
-            )
-            .child(
-                rect()
-                    .horizontal()
-                    .spacing(8.)
-                    .cross_align(Alignment::Center)
-                    .margin(Gaps::new(8., 0., 0., 0.))
-                    .child(launch_button(
-                        cluster_id,
-                        dispatch,
-                        launch_button_state(&game, cluster_id, syncing, shared_dir_taken),
-                    ))
-                    .child(cluster_settings_button(cluster_id)),
-            )
+            .child(card)
             .child(LobbyHeroChip)
     }
 }
@@ -142,20 +172,31 @@ fn launch_button(
     dispatch: crate::Actions,
     state: (&'static str, bool),
 ) -> impl IntoElement {
-    let (label, enabled) = state;
+    let (launch_text, enabled) = state;
     Button::new()
         .primary()
         .medium()
-        .font_size(text_size(16.))
-        .font_weight(FontWeight::from(450))
         .enabled(enabled)
-        .padding(Gaps::new_symmetric(8., 24.))
+        .padding(Gaps::new_symmetric(11., 30.))
         .on_press(move |_| {
             if enabled {
                 dispatch.launch_cluster(cluster_id);
             }
         })
-        .text(label)
+        .child(
+            rect()
+                .horizontal()
+                .cross_align(Alignment::Center)
+                .spacing(10.)
+                .child(Icon::new(IconType::Play).size(16.).color(colors::on_brand_strong()))
+                .child(
+                    label()
+                        .text(launch_text)
+                        .font_size(text_size(16.))
+                        .font_weight(FontWeight::SEMI_BOLD)
+                        .color(colors::on_brand_strong()),
+                ),
+        )
 }
 
 fn cluster_settings_button(cluster_id: i64) -> impl IntoElement {

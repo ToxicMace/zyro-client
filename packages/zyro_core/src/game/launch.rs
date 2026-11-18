@@ -451,6 +451,19 @@ async fn start(
         jvm_args.push(arg);
     }
 
+    let zyro_hud_enabled = state.settings.read().zyro_hud_enabled;
+    if let Some(arg) = crate::game::zyro_hud::jvm_argument(
+        zyro_hud_enabled,
+        cluster.mc_loader,
+        &mc_version,
+        &mods_dir,
+    )
+    .await
+    {
+        tracing::info!(cluster_id, "loading Zyro HUD");
+        jvm_args.push(arg);
+    }
+
     let crash_dir = cluster.dir()?.join("crash-reports");
     polyio::create_dir_all(&crash_dir).await.ok();
     let error_file = crash_dir.join("hs_err_pid").display().to_string();

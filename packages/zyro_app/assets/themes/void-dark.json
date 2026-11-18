@@ -1,0 +1,15 @@
+{
+  "name": "Void Dark",
+  "radius_scale": 1.45,
+  "colors": {
+    "light": false,
+    "page": "#000000",
+    "page_elevated": "#07080C",
+    "card": "#0B0C11",
+    "component": "#111319",
+    "border": "#FFFFFF12",
+    "text": "#EDEFF7",
+    "text_secondary": "#7A7F8E",
+    "accent": "#22D3EE"
+  }
+}

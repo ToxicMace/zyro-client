@@ -1,14 +1,15 @@
 {
-  "name": "PolyGlass Dark",
+  "name": "Zyro Dark",
+  "radius_scale": 1.45,
   "colors": {
     "light": false,
-    "page": "#11171C",
-    "page_elevated": "#151C22",
-    "card": "#1A2229",
-    "component": "#1A2229",
-    "border": "#FFFFFF1A",
-    "text": "#D5DBFF",
-    "text_secondary": "#757883",
-    "accent": "#2B4BFF"
+    "page": "#0B0E17",
+    "page_elevated": "#10141F",
+    "card": "#141A28",
+    "component": "#182030",
+    "border": "#FFFFFF14",
+    "text": "#E6EAFF",
+    "text_secondary": "#7D8499",
+    "accent": "#4C6EF5"
   }
 }

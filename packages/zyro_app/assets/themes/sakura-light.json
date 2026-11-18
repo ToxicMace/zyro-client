@@ -1,0 +1,15 @@
+{
+  "name": "Sakura Light",
+  "radius_scale": 1.45,
+  "colors": {
+    "light": true,
+    "page": "#FFF6FA",
+    "page_elevated": "#FFFFFF",
+    "card": "#FFFFFF",
+    "component": "#FBEAF2",
+    "border": "#3B0A2A1A",
+    "text": "#2A1622",
+    "text_secondary": "#86677A",
+    "accent": "#DB4F96"
+  }
+}

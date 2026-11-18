@@ -9,8 +9,7 @@ use crate::hooks::{
     OnboardingSelectionState, has_migration_data, onboarding_bundles_items, use_launcher,
     use_migration, use_onboarding_bundles, use_provide_onboarding_selection, use_settings_snapshot,
 };
-use crate::i18n::t;
-use crate::theme::{colors, text_size};
+use crate::theme::colors;
 use crate::view::onboarding::{default_selection, onboarding_step_index, onboarding_total};
 
 #[derive(PartialEq)]
@@ -108,8 +107,7 @@ impl Component for OnboardingShell {
                             .width(Size::fill())
                             .height(Size::flex(1.0))
                             .overflow(Overflow::Clip)
-                            .child(Outlet::<Route>::new())
-                            .child(copyright(chrome)),
+                            .child(Outlet::<Route>::new()),
                     ),
             )
     }
@@ -130,15 +128,3 @@ fn progress_bar(step_index: usize, total: usize) -> impl IntoElement {
         )
 }
 
-fn copyright(opacity: f32) -> impl IntoElement {
-    rect()
-        .position(Position::new_absolute().bottom(16.).left(24.))
-        .interactive(false)
-        .opacity(opacity)
-        .child(
-            label()
-                .text(t("oneclient.layout.onboarding.copyright"))
-                .font_size(text_size(11.))
-                .color(colors::fg_secondary()),
-        )
-}

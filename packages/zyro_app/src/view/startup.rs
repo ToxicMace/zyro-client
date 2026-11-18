@@ -3,7 +3,7 @@ use freya::{prelude::*, router::*};
 
 use crate::AppAssets;
 use crate::Route;
-use crate::components::{Button, progress_track};
+use crate::components::{Button, Icon, IconType, progress_track};
 use crate::hooks::use_dispatch;
 use crate::hooks::{
     terms_document, terms_is_loading, use_launcher, use_notifications_snapshot,
@@ -199,10 +199,16 @@ impl Component for Startup {
             .vertical()
             .spacing(14.)
             .child(
+                Icon::new(IconType::IconLogo)
+                    .size(72.)
+                    .color(colors::brand())
+                    .into_element(),
+            )
+            .child(
                 SvgViewer::new(("logo.svg", logo.read().cloned()))
                     .show_loader(false)
-                    .width(Size::px(288.))
-                    .height(Size::px(60.))
+                    .width(Size::px(40. * crate::theme::WORDMARK_RATIO))
+                    .height(Size::px(40.))
                     .color(colors::fg_primary()),
             )
             .child(

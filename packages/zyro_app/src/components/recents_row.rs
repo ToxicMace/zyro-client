@@ -157,6 +157,18 @@ impl Component for ClusterCard {
         } else {
             format!("{} {}", self.cluster.mc_version, self.cluster.mc_loader)
         };
+        // Zyro cards: a small loader chip over a big version number.
+        let (chip, headline) = if self.cluster.user_created {
+            (
+                format!("{} {}", self.cluster.mc_version, self.cluster.mc_loader),
+                self.cluster.name.clone(),
+            )
+        } else {
+            (
+                self.cluster.mc_loader.to_string(),
+                self.cluster.mc_version.clone(),
+            )
+        };
 
         let cluster_id = self.cluster.id;
         let mod_tabs = !self.cluster.lacks_mod_loader();
@@ -204,7 +216,7 @@ impl Component for ClusterCard {
                     .width(Size::fill())
                     .height(Size::fill())
                     .position(Position::new_absolute())
-                    .corner_radius(rounded(12.))
+                    .corner_radius(rounded(14.))
                     .overflow(Overflow::Clip)
                     .border(
                         if active || focused {
@@ -227,14 +239,21 @@ impl Component for ClusterCard {
                     .on_pointer_out(move |_| {
                         *hovering.write() = false;
                     })
-                    .shadow(
+                    .shadow(if active {
+                        Shadow::new()
+                            .blur(32.)
+                            .spread(2.)
+                            .x(0.)
+                            .y(8.)
+                            .color(colors::brand().with_a(110))
+                    } else {
                         Shadow::new()
                             .blur(24.)
-                            .spread(12.)
+                            .spread(8.)
                             .x(0.)
-                            .y(0.)
-                            .color(Color::from_af32rgb(0.3, 0, 0, 0)),
-                    )
+                            .y(6.)
+                            .color(Color::from_af32rgb(0.35, 0, 0, 0))
+                    })
                     .on_press(on_press)
                     .on_secondary_down(move |e: Event<PressEventData>| {
                         if let PressEventData::Mouse(m) = e.data() {
@@ -292,8 +311,8 @@ impl Component for ClusterCard {
                                     .background(
                                         LinearGradient::new()
                                             .angle(0.0)
-                                            .stop((Color::from_argb(0, 25, 25, 25), 24.519))
-                                            .stop((Color::from_af32rgb(0.75, 17, 17, 21), 65.)),
+                                            .stop((Color::from_argb(0, 8, 10, 18), 30.))
+                                            .stop((Color::from_af32rgb(0.85, 8, 10, 18), 100.)),
                                     )
                                     .child(if modpack {
                                         MarqueeTitle {
@@ -302,7 +321,7 @@ impl Component for ClusterCard {
                                         }
                                         .into_element()
                                     } else {
-                                        title_label(title).into_element()
+                                        zyro_card_title(chip, headline, active).into_element()
                                     }),
                             )
                             .child(
@@ -327,6 +346,47 @@ impl Component for ClusterCard {
     }
 }
 
+fn zyro_card_title(chip: String, headline: String, active: bool) -> impl IntoElement {
+    rect()
+        .vertical()
+        .spacing(6.)
+        .child(
+            rect()
+                .horizontal()
+                .cross_align(Alignment::Center)
+                .spacing(6.)
+                .padding(Gaps::new_symmetric(3., 9.))
+                .corner_radius(CornerRadius::new_all(999.))
+                .background(if active {
+                    colors::brand()
+                } else {
+                    Color::from_argb(60, 255, 255, 255)
+                })
+                .child(
+                    label()
+                        .text(chip.to_uppercase())
+                        .max_lines(1)
+                        .font_size(text_size(10.))
+                        .font_weight(FontWeight::BOLD)
+                        .color(if active {
+                            colors::on_brand_strong()
+                        } else {
+                            colors::on_media()
+                        }),
+                ),
+        )
+        .child(
+            label()
+                .text(headline)
+                .font_size(text_size(30.))
+                .font_weight(FontWeight::EXTRA_BOLD)
+                .max_lines(1)
+                .text_overflow(TextOverflow::Ellipsis)
+                .color(colors::on_media()),
+        )
+}
+
+#[allow(dead_code)]
 fn title_label(text: String) -> Label {
     label()
         .text(text)

@@ -70,6 +70,8 @@ pub struct LauncherSettings {
     pub dynamic_background_enabled: bool,
     pub start_maximized: bool,
     pub animations_enabled: bool,
+    /// Load the bundled Zyro HUD mod into supported Fabric instances.
+    pub zyro_hud_enabled: bool,
     pub theme: String,
     pub accent_color: Option<String>,
     pub language: Option<String>,
@@ -134,6 +136,7 @@ impl Default for LauncherSettings {
             dynamic_background_enabled: true,
             start_maximized: false,
             animations_enabled: true,
+            zyro_hud_enabled: true,
             theme: "dark".to_string(),
             accent_color: None,
             language: None,

@@ -8,3 +8,6 @@ pub const UPDATER_ENDPOINT: &str =
     None => "",
 };
 pub const RELEASES_URL: &str = "https://github.com/Polyfrost/OneLauncher/releases/latest";
+
+/// Poly+ (Polyfrost's paid cosmetics, wardrobe and social service) is hidden in Zyro builds.
+pub const POLYPLUS_FEATURES: bool = false;

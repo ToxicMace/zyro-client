@@ -1,0 +1,15 @@
+{
+  "name": "Aurora Dark",
+  "radius_scale": 1.45,
+  "colors": {
+    "light": false,
+    "page": "#081114",
+    "page_elevated": "#0C171B",
+    "card": "#101D22",
+    "component": "#14242A",
+    "border": "#FFFFFF14",
+    "text": "#DDF4EE",
+    "text_secondary": "#6F8E88",
+    "accent": "#2DD4BF"
+  }
+}

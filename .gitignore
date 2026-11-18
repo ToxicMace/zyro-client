@@ -4,3 +4,9 @@
 OneLauncher.iml
 
 /packages/oneclient_app/icons/generated/
+
+.tools/
+
+mods/zyro-hud/build/
+mods/zyro-hud/.gradle/
+

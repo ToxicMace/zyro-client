@@ -14,6 +14,7 @@ use crate::i18n::t;
 use crate::layout::SearchItem;
 use crate::routes::Route;
 use crate::theme::{
+    ACCENT_SWATCHES,
     colors::{self, Palette},
     delete_theme, duplicate_theme, export_theme, family_name, light_variant, system_aware,
     system_pair, system_theme_id, text_size, theme_display_name, themes,
@@ -40,11 +41,17 @@ impl Component for SettingsAppearance {
             move || v
         });
 
+        let zyro_hud_on = use_state({
+            let v = settings.zyro_hud_enabled;
+            move || v
+        });
+
         let mut first = use_state(|| true);
         let persist = dispatch.clone();
         use_side_effect(move || {
             let parallax = *dynamic_bg.read();
             let animations = *animations_on.read();
+            let zyro_hud = *zyro_hud_on.read();
             if *first.peek() {
                 first.set(false);
                 return;
@@ -52,6 +59,7 @@ impl Component for SettingsAppearance {
             persist.edit_settings(|settings| {
                 settings.dynamic_background_enabled = parallax;
                 settings.animations_enabled = animations;
+                settings.zyro_hud_enabled = zyro_hud;
             });
         });
 
@@ -85,7 +93,8 @@ impl Component for SettingsAppearance {
                         dynamic_bg,
                         defaults.dynamic_background_enabled,
                     ))
-                    .child(animations_row(animations_on, defaults.animations_enabled)),
+                    .child(animations_row(animations_on, defaults.animations_enabled))
+                    .child(zyro_hud_row(zyro_hud_on, defaults.zyro_hud_enabled)),
             )
             .child(
                 rect().padding(Gaps::new(8., 0., 0., 0.)).child(
@@ -418,16 +427,59 @@ fn accent_color_row(accent: State<Option<String>>, default: Option<String>) -> i
         IconType::PaintPour,
         t("oneclient.settings.appearance.accent_color.title"),
         t("oneclient.settings.appearance.accent_color.description"),
-        resettable(
-            ColorPicker::new(shown, move |picked: Color| {
-                let mut accent = accent;
-                accent.set(Some(colors::format_hex(picked)));
-            })
-            .into_element(),
-            accent,
-            default,
-        ),
+        rect()
+            .horizontal()
+            .cross_align(Alignment::Center)
+            .spacing(14.)
+            .child(accent_swatches(accent))
+            .child(resettable(
+                ColorPicker::new(shown, move |picked: Color| {
+                    let mut accent = accent;
+                    accent.set(Some(colors::format_hex(picked)));
+                })
+                .into_element(),
+                accent,
+                default,
+            )),
     )
+}
+
+/// Zyro: one-click accent presets beside the full color picker.
+fn accent_swatches(accent: State<Option<String>>) -> impl IntoElement {
+    let current = accent
+        .read()
+        .as_deref()
+        .map(str::to_ascii_uppercase)
+        .unwrap_or_default();
+
+    rect()
+        .horizontal()
+        .cross_align(Alignment::Center)
+        .spacing(6.)
+        .children(ACCENT_SWATCHES.iter().map(|hex| {
+            let (r, g, b) = colors::parse_hex(hex).unwrap_or((0, 0, 0));
+            let selected = current == *hex;
+            let hex = (*hex).to_string();
+            rect()
+                .width(Size::px(18.))
+                .height(Size::px(18.))
+                .corner_radius(CornerRadius::new_all(9.))
+                .background(Color::from_rgb(r, g, b))
+                .border(border_all_color(
+                    if selected { 2. } else { 1. },
+                    if selected {
+                        colors::fg_strong()
+                    } else {
+                        colors::component_border()
+                    },
+                ))
+                .cursor(CursorIcon::Pointer)
+                .on_press(move |_| {
+                    let mut accent = accent;
+                    accent.set(Some(hex.clone()));
+                })
+                .into_element()
+        }))
 }
 
 fn custom_theme_row() -> impl IntoElement {
@@ -456,6 +508,15 @@ fn animations_row(animations_on: State<bool>, default: bool) -> impl IntoElement
         t("oneclient.settings.appearance.animations.title"),
         t("oneclient.settings.appearance.animations.description"),
         resettable(toggle(animations_on), animations_on, default),
+    )
+}
+
+fn zyro_hud_row(enabled: State<bool>, default: bool) -> impl IntoElement {
+    settings_row(
+        IconType::LayoutTop,
+        t("oneclient.settings.appearance.zyro_hud.title"),
+        t("oneclient.settings.appearance.zyro_hud.description"),
+        resettable(toggle(enabled), enabled, default),
     )
 }
 
