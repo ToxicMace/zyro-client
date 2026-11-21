@@ -116,14 +116,30 @@ impl DynamicArt {
 
 pub fn use_art_bytes(art: &DynamicArt) -> (String, Bytes) {
     let max_edge = art.max_edge;
-    use_resolved_art(art)
-        .unwrap_or_else(|| (format!("{max_edge}|{HOME_BACKGROUND_ASSET}"), bundled_art()))
+    let asset = bundled_asset(art.major);
+    use_resolved_art(art).unwrap_or_else(|| (format!("{max_edge}|{asset}"), bundled_art(asset)))
 }
 
-fn bundled_art() -> Bytes {
-    static ART: LazyLock<Bytes> =
+/// Zyro: each Minecraft generation gets its own bundled aurora.
+const LEGACY_BACKGROUND_ASSET: &str = "backgrounds/ZyroNebula.jpg";
+
+fn bundled_asset(major: Option<u32>) -> &'static str {
+    match major {
+        Some(major) if major < 26 => LEGACY_BACKGROUND_ASSET,
+        _ => HOME_BACKGROUND_ASSET,
+    }
+}
+
+fn bundled_art(asset: &'static str) -> Bytes {
+    static MODERN: LazyLock<Bytes> =
         LazyLock::new(|| AppAssets::get_bytes(HOME_BACKGROUND_ASSET).unwrap_or_default());
-    ART.clone()
+    static LEGACY: LazyLock<Bytes> =
+        LazyLock::new(|| AppAssets::get_bytes(LEGACY_BACKGROUND_ASSET).unwrap_or_default());
+    if asset == LEGACY_BACKGROUND_ASSET {
+        LEGACY.clone()
+    } else {
+        MODERN.clone()
+    }
 }
 
 fn use_resolved_art(art: &DynamicArt) -> Option<(String, Bytes)> {
@@ -205,8 +221,9 @@ impl Component for DynamicArt {
         }
 
         let max_edge = self.max_edge;
-        let (key, bytes) = resolved
-            .unwrap_or_else(|| (format!("{max_edge}|{HOME_BACKGROUND_ASSET}"), bundled_art()));
+        let asset = bundled_asset(self.major);
+        let (key, bytes) =
+            resolved.unwrap_or_else(|| (format!("{max_edge}|{asset}"), bundled_art(asset)));
 
         ImageViewer::new((key, bytes))
             .width(Size::fill())
