@@ -14,3 +14,4 @@ mods/zyro-hud/.gradle/
 mods/**/.gradle/
 mods/**/build/
 mods/**/run/
+dist/
