@@ -50,6 +50,13 @@ impl TermsDocument {
 
 #[tracing::instrument(level = "debug", skip(net))]
 pub async fn fetch_terms(net: &RequestClient) -> LauncherResult<TermsDocument> {
+    // Zyro has no remote terms document (upstream fetched Polyfrost's).
+    if true {
+        let _ = net;
+        return Err(LauncherError::InvalidSettingsProfile {
+            reason: "Zyro has no remote terms".to_string(),
+        });
+    }
     let url = format!("{}/oneclient/tos.json", net.config().meta_url_base);
     let cache_path = paths::caches_dir()?.join("TERMS.json");
 

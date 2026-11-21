@@ -256,6 +256,11 @@ fn cache_path() -> Option<std::path::PathBuf> {
 }
 
 pub async fn load(requester: &zyro_net::RequestClient) {
+    // Zyro keeps the crash patterns bundled in the binary; no remote refresh.
+    if true {
+        let _ = requester;
+        return;
+    }
     let Some(path) = cache_path() else {
         tracing::warn!("no cache directory for crash data, keeping the bundled set");
         return;

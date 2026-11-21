@@ -505,11 +505,14 @@ pub async fn start_launcher(
     );
 
     zyro_net::status::start(state.services.requester.clone());
-    crate::translations::start(state.services.requester.clone());
-    zyro_polyplus::start(
-        std::sync::Arc::clone(&state.auth),
-        state.services.events.clone(),
-    );
+    // Zyro: no remote translation feed and no Poly+ session (both were Polyfrost services).
+    if crate::constants::POLYPLUS_FEATURES {
+        crate::translations::start(state.services.requester.clone());
+        zyro_polyplus::start(
+            std::sync::Arc::clone(&state.auth),
+            state.services.events.clone(),
+        );
+    }
     zyro_core::run_startup_tasks(&state);
 
     let data_dir = zyro_common::paths::data_dir()

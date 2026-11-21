@@ -145,6 +145,11 @@ impl VersionsManager {
         file_name: &str,
         remote_name: &str,
     ) -> LauncherResult<Option<(T, bool)>> {
+        // Zyro: version names, art and migrations were Polyfrost data; nothing is fetched.
+        if true {
+            let _ = (services, file_name, remote_name);
+            return Ok(None);
+        }
         let path = paths::caches_dir()?.join(file_name);
         let url = format!(
             "{}/oneclient/versions/{remote_name}",

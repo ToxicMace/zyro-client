@@ -172,7 +172,7 @@ impl Worker {
                     .large_image(LARGE_IMAGE)
                     .large_text("Zyro Client"),
             )
-            .buttons(vec![Button::new("Website", "https://polyfrost.org/")]);
+            .buttons(Vec::<Button>::new());
 
         if let Err(err) = self.client.set_activity(activity) {
             tracing::warn!("Discord RPC set_activity failed: {err}");

@@ -25,10 +25,13 @@ impl Component for OnboardingLanguage {
         let dispatch = use_dispatch();
         let language = use_onboarding_selection().language;
         let migration_query = use_migration();
+        let picks_location = *use_onboarding_selection().picks_location.read();
         let back = if has_migration_data(&migration_query) {
             Route::OnboardingMigration {}
+        } else if picks_location {
+            Route::OnboardingLocation {}
         } else {
-            Route::OnboardingTerms {}
+            Route::OnboardingWelcome {}
         };
 
         let rows: Vec<Element> = translations::choices()

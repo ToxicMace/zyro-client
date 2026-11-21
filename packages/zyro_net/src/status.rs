@@ -130,7 +130,10 @@ pub async fn check_service_status(requester: &RequestClient) -> ServiceStatus {
 
     let mc_auth_up = reachable(client, MC_AUTH_URL).await;
 
-    let polyfrost_up = match client
+    // Zyro does not depend on Polyfrost, so its status page is never probed.
+    let polyfrost_up = true;
+    #[allow(unreachable_code, unused_variables)]
+    let _upstream = false && match client
         .get(POLYFROST_STATUS_URL)
         .timeout(PROBE_TIMEOUT)
         .send()

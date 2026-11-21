@@ -84,6 +84,13 @@ fn resolve(manifest: Manifest, bodies: &HashMap<String, String>) -> DisableWarni
 
 #[tracing::instrument(level = "debug", skip(net))]
 pub async fn fetch_disable_warnings(net: &RequestClient) -> LauncherResult<DisableWarnings> {
+    // Zyro: these warnings came from Polyfrost's bundle data; there are none to fetch.
+    if true {
+        let _ = net;
+        return Err(LauncherError::InvalidSettingsProfile {
+            reason: "Zyro has no remote disable warnings".to_string(),
+        });
+    }
     let url = format!(
         "{}/oneclient/bundles/disable-warnings.json",
         net.config().meta_url_base

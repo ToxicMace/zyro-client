@@ -435,7 +435,7 @@ fn migration_nav(next_enabled: bool, on_next: impl FnMut() + 'static) -> impl In
                 .secondary()
                 .width(Size::px(128.))
                 .on_press(move |_| {
-                    let _ = RouterContext::get().replace(Route::OnboardingTerms {});
+                    let _ = RouterContext::get().replace(Route::OnboardingWelcome {});
                 })
                 .text(t("oneclient.common.back")),
         )

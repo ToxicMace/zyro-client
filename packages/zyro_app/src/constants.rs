@@ -11,3 +11,6 @@ pub const RELEASES_URL: &str = "https://github.com/Polyfrost/OneLauncher/release
 
 /// Poly+ (Polyfrost's paid cosmetics, wardrobe and social service) is hidden in Zyro builds.
 pub const POLYPLUS_FEATURES: bool = false;
+
+/// Upstream asked users to accept Polyfrost's terms; Zyro has none, so that step auto-completes.
+pub const SKIP_UPSTREAM_TERMS: bool = true;

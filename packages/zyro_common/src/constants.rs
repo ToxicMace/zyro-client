@@ -1,6 +1,12 @@
 pub const DUMMY_REPLACE_NEWLINE: &str = "\n";
 
-pub const MICROSOFT_CLIENT_ID: &str = "9419b7ee-1448-4d1b-b52a-550d8f36ab56";
+/// Azure app used for Microsoft sign-in. Build with ZYRO_MSA_CLIENT_ID set to your own app
+/// (registered in Azure and approved for the Minecraft API) so the consent page says "Zyro".
+/// The fallback is the upstream OneLauncher app and shows its name on Microsoft's page.
+pub const MICROSOFT_CLIENT_ID: &str = match option_env!("ZYRO_MSA_CLIENT_ID") {
+    Some(id) => id,
+    None => "9419b7ee-1448-4d1b-b52a-550d8f36ab56",
+};
 pub const MINECRAFT_SCOPES: &str = "XboxLive.SignIn XboxLive.offline_access";
 pub const CURSEFORGE_API_KEY: &str = "$2a$10$6utA1UNSmFPrE/Lh7b7ndeeGmiOkjKNY8kpFB0fsmE/d42ZAfFgCe";
 // Create your own Discord application and build with ZYRO_DISCORD_CLIENT_ID to enable

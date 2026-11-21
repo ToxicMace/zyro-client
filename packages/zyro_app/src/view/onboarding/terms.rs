@@ -56,6 +56,17 @@ impl Component for OnboardingTerms {
             }
         });
 
+        // Zyro has no third-party terms to accept: record consent locally and move on.
+        if crate::constants::SKIP_UPSTREAM_TERMS {
+            dispatch.edit_settings(|settings| {
+                settings.accepted_tos_version = settings.accepted_tos_version.max(1);
+                settings.accepted_privacy_version = settings.accepted_privacy_version.max(1);
+                settings.declined_tos = false;
+            });
+            let _ = RouterContext::get().replace(next);
+            return rect();
+        }
+
         let terms_version = document.as_ref().map(|doc| doc.version).unwrap_or(1);
         let privacy_version = document
             .as_ref()
