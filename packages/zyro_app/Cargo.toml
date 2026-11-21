@@ -101,8 +101,8 @@ product-name = "Zyro Client"
 identifier = "org.zyro.ZyroClient"
 category = "Game"
 publisher = "Zyro"
-copyright = "© 2026 Zyro. Based on OneLauncher by Polyfrost (GPL-3.0)"
-homepage = "https://github.com/Polyfrost/OneLauncher"
+copyright = "© 2026 Zyro"
+homepage = "https://github.com/ToxicMace/zyro-client"
 long-description = "Clean, smooth and fully themeable Minecraft client"
 formats = ["nsis", "app", "dmg", "deb", "appimage"]
 binaries = [{ path = "zyro_app", main = true }]

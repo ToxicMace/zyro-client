@@ -120,5 +120,7 @@ fn is_first_party(url: &str) -> bool {
         .split(['/', '?', '#', ':'])
         .next()
         .unwrap_or_default();
-    host == "polyfrost.org" || host.ends_with(".polyfrost.org")
+    // Zyro has no first-party web hosts yet: every external link asks first.
+    let _ = host;
+    false
 }

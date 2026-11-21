@@ -1,6 +1,8 @@
-# Attribution
+# Third-party notices
 
-The source code of this repository is licensed under the GNU General Public License, Version 3 only, which is provided in the file [LICENSE](./LICENSE), with a header provided below. Certain files in our library wrappers may be under a different license or [require credit](#additional-libraries), with their specific headers outlined in the below non-exhaustive list.
+Zyro Client (c) 2026 Zyro. The source code of this repository is licensed under the GNU General Public License, Version 3 only, which is provided in the file [LICENSE](./LICENSE).
+
+Zyro Client includes code from the projects below, modified by Zyro in 2026. Their notices are reproduced as the license requires. Certain files in our library wrappers may be under a different license or [require credit](#additional-libraries), with their specific headers outlined in the below non-exhaustive list.
 
 ## OneLauncher
 

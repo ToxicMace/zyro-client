@@ -42,10 +42,8 @@ Optional build-time settings: `ZYRO_MSA_CLIENT_ID` (Microsoft sign-in app), `ZYR
 
 Branding assets are generated from `branding/` (`generate.py`, `mod_assets.py`, `background.py`).
 
-## License and credits
+## License
 
-Zyro Client is free software under the **GNU General Public License v3.0 only** (see [LICENSE](LICENSE)).
-
-It is a fork of [OneLauncher](https://github.com/Polyfrost/OneLauncher) by Polyfrost and contributors, also GPL-3.0. Polyfrost branding (logos, artwork) has been removed; see [ATTRIBUTION.md](ATTRIBUTION.md) for third-party notices.
+Zyro Client is free software under the **GNU General Public License v3.0 only** (see [LICENSE](LICENSE)). Third-party notices are listed in [ATTRIBUTION.md](ATTRIBUTION.md).
 
 Zyro Client is not affiliated with, endorsed by, or associated with Mojang Studios or Microsoft. Minecraft is a trademark of Mojang Studios.

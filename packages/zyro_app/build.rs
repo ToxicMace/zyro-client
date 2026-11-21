@@ -8,7 +8,7 @@ fn main() {
         res.set("CompanyName", "Zyro");
         res.set("ProductName", "Zyro Client");
         res.set("FileDescription", "Zyro Client");
-        res.set("LegalCopyright", "Â© 2026 Zyro. Based on Zyro Â© Polyfrost (GPL-3.0)");
+        res.set("LegalCopyright", "© 2026 Zyro");
         res.set("OriginalFilename", "zyro_app.exe");
         res.set("InternalName", "zyro_app");
         res.set("FileVersion", version);
