@@ -34,8 +34,8 @@ public final class KeystrokesElement extends HudElement {
         Options o = ctx.mc.options;
         boolean[] pressed = {
                 down(o.keyUp), down(o.keyLeft), down(o.keyDown), down(o.keyRight),
-                ClickTracker.leftDown() && ctx.mc.screen == null,
-                ClickTracker.rightDown() && ctx.mc.screen == null,
+                ClickTracker.leftDown() && dev.zyro.client.compat.Compat.screen(ctx.mc) == null,
+                ClickTracker.rightDown() && dev.zyro.client.compat.Compat.screen(ctx.mc) == null,
                 down(o.keyJump),
         };
         float step = Math.min(1f, ctx.dt * 16f);

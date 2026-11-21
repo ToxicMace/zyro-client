@@ -7,8 +7,9 @@ import dev.zyro.client.element.HudElement;
 import dev.zyro.client.render.Colors;
 import dev.zyro.client.render.Draw;
 import dev.zyro.client.render.HudRenderer.Placed;
-import net.minecraft.client.gui.GuiGraphics;
+import dev.zyro.client.compat.Gfx;
 import net.minecraft.client.gui.screens.Screen;
+import dev.zyro.client.compat.ZyroScreenBase;
 import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.network.chat.Component;
 
@@ -21,7 +22,7 @@ import java.util.function.IntConsumer;
  * Right Shift editor: drag elements, scroll to resize, and theme everything from a side panel.
  * The panel is a tiny immediate-mode UI: every frame draws controls and records their hit boxes.
  */
-public final class ZyroEditorScreen extends Screen {
+public final class ZyroEditorScreen extends ZyroScreenBase {
     private static final int PANEL_W = 168;
     private static final int ROW = 13;
     private static final int SNAP = 5;
@@ -79,18 +80,21 @@ public final class ZyroEditorScreen extends Screen {
     @Override
     public void onClose() {
         cfg().save();
-        minecraft.setScreen(parent);
+        dev.zyro.client.compat.Compat.setScreen(minecraft, parent);
     }
 
     @Override
-    public void renderBackground(GuiGraphics g, int mouseX, int mouseY, float partialTick) {
+    protected boolean drawCustomBackground(Gfx g, int mouseX, int mouseY, float partialTick) {
         // Keep the world visible: a soft dim instead of the vanilla blur.
+        if (minecraft.level == null) {
+            return false; // on the main menu keep the panorama
+        }
         g.fill(0, 0, width, height, 0x66000000);
+        return true;
     }
 
     @Override
-    public void render(GuiGraphics g, int mouseX, int mouseY, float partialTick) {
-        super.render(g, mouseX, mouseY, partialTick);
+    protected void drawScreen(Gfx g, int mouseX, int mouseY, float partialTick) {
         this.mouseX = mouseX;
         this.mouseY = mouseY;
         appear = Math.min(1f, appear + 0.12f);
@@ -117,7 +121,7 @@ public final class ZyroEditorScreen extends Screen {
                 int tw = font.width(tip) + 8;
                 int ty = p.y() - 14 < 0 ? p.y() + p.h() + 4 : p.y() - 14;
                 Draw.panel(g, p.x(), ty, tw, 11, 0xE0101420, true);
-                g.drawString(font, tip, p.x() + 4, ty + 2, 0xFFFFFFFF, false);
+                g.text(font, tip, p.x() + 4, ty + 2, 0xFFFFFFFF, false);
             }
         }
 
@@ -143,7 +147,7 @@ public final class ZyroEditorScreen extends Screen {
         return mx >= panelX() - 4;
     }
 
-    private void drawPanel(GuiGraphics g) {
+    private void drawPanel(Gfx g) {
         hits.clear();
         int px = panelX();
         int top = 8;
@@ -152,16 +156,16 @@ public final class ZyroEditorScreen extends Screen {
         Draw.outline(g, px, top, PANEL_W, bottom - top, 0x1FFFFFFF);
         g.fill(px + 1, top + 1, px + PANEL_W - 1, top + 2, Colors.opaque(cfg().accent));
 
-        g.enableScissor(px + 1, top + 2, px + PANEL_W - 1, bottom - 1);
+        g.scissor(px + 1, top + 2, px + PANEL_W - 1, bottom - 1);
         int x = px + 8;
         int w = PANEL_W - 16;
         int y = top + 8 - panelScroll;
         int start = y;
 
-        g.drawString(font, "ZYRO", x, y, Colors.opaque(cfg().accent), false);
-        g.drawString(font, "SETTINGS", x + font.width("ZYRO "), y, 0xFFE6EAFF, false);
+        g.text(font, "ZYRO", x, y, Colors.opaque(cfg().accent), false);
+        g.text(font, "SETTINGS", x + font.width("ZYRO "), y, 0xFFE6EAFF, false);
         y += 11;
-        g.drawString(font, "Drag to move, scroll to resize", x, y, 0xFF7D8499, false);
+        g.text(font, "Drag to move, scroll to resize", x, y, 0xFF7D8499, false);
         y += 16;
 
         if (selected == null) {
@@ -170,15 +174,15 @@ public final class ZyroEditorScreen extends Screen {
             y = elementControls(g, x, y, w, cfg().element(selected));
         }
         panelContentH = y - start + 8;
-        g.disableScissor();
+        g.noScissor();
     }
 
-    private int section(GuiGraphics g, String title, int x, int y) {
-        g.drawString(font, title.toUpperCase(), x, y, 0xFF7D8499, false);
+    private int section(Gfx g, String title, int x, int y) {
+        g.text(font, title.toUpperCase(), x, y, 0xFF7D8499, false);
         return y + 11;
     }
 
-    private int globalControls(GuiGraphics g, int x, int y, int w) {
+    private int globalControls(Gfx g, int x, int y, int w) {
         HudConfig c = cfg();
 
         y = section(g, "Theme", x, y);
@@ -235,8 +239,8 @@ public final class ZyroEditorScreen extends Screen {
             int rowY = y;
             boolean hover = inside(x, rowY, w - 26, ROW);
             if (hover) Draw.panel(g, x - 2, rowY, w - 24, ROW, 0x14FFFFFF, true);
-            g.drawString(font, el.name, x + 2, rowY + 3, ec.enabled ? 0xFFE6EAFF : 0xFF5A6075, false);
-            g.drawString(font, "›", x + w - 34, rowY + 3, 0xFF7D8499, false);
+            g.text(font, el.name, x + 2, rowY + 3, ec.enabled ? 0xFFE6EAFF : 0xFF5A6075, false);
+            g.text(font, "›", x + w - 34, rowY + 3, 0xFF7D8499, false);
             hits.add(new Hit(x, rowY, w - 26, ROW, () -> selected = el.id));
             pill(g, x + w - 20, rowY + 2, ec.enabled, () -> ec.enabled = !ec.enabled);
             y += ROW + 1;
@@ -246,7 +250,7 @@ public final class ZyroEditorScreen extends Screen {
         return y;
     }
 
-    private int elementControls(GuiGraphics g, int x, int y, int w, ElementConfig ec) {
+    private int elementControls(Gfx g, int x, int y, int w, ElementConfig ec) {
         HudElement el = ZyroClient.RENDERER.elements().stream().filter(e -> e.id.equals(selected)).findFirst().orElse(null);
         if (el == null) {
             selected = null;
@@ -254,7 +258,7 @@ public final class ZyroEditorScreen extends Screen {
         }
         y = button(g, x, y, w, "‹  All settings", () -> selected = null);
         y += 4;
-        g.drawString(font, el.name, x, y, 0xFFFFFFFF, false);
+        g.text(font, el.name, x, y, 0xFFFFFFFF, false);
         y += 14;
 
         y = toggle(g, x, y, w, "Visible", ec.enabled, v -> ec.enabled = v);
@@ -286,24 +290,24 @@ public final class ZyroEditorScreen extends Screen {
         return mouseX >= x && mouseX < x + w && mouseY >= y && mouseY < y + h;
     }
 
-    private void chip(GuiGraphics g, int x, int y, int w, int h, String label, boolean active, int color, Runnable action) {
+    private void chip(Gfx g, int x, int y, int w, int h, String label, boolean active, int color, Runnable action) {
         boolean hover = inside(x, y, w, h);
         int bg = active ? Colors.withAlpha(color, 60) : (hover ? 0x22FFFFFF : 0x12FFFFFF);
         Draw.panel(g, x, y, w, h, bg, true);
         if (active) Draw.outline(g, x, y, w, h, Colors.opaque(color));
         g.fill(x + 4, y + h / 2 - 2, x + 8, y + h / 2 + 2, Colors.opaque(color));
-        g.drawString(font, label, x + 11, y + 3, active ? 0xFFFFFFFF : 0xFFC8CEE0, false);
+        g.text(font, label, x + 11, y + 3, active ? 0xFFFFFFFF : 0xFFC8CEE0, false);
         hits.add(new Hit(x, y, w, h, action));
     }
 
-    private int swatches(GuiGraphics g, int x, int y, int w, int[] colors, int current, IntConsumer pick, Runnable auto) {
+    private int swatches(Gfx g, int x, int y, int w, int[] colors, int current, IntConsumer pick, Runnable auto) {
         int size = 12;
         int gap = 2;
         int cx = x;
         if (auto != null) {
             boolean sel = current == 0;
             Draw.panel(g, cx, y, 26, size, sel ? 0x40FFFFFF : 0x14FFFFFF, true);
-            g.drawString(font, "Auto", cx + 3, y + 2, 0xFFE6EAFF, false);
+            g.text(font, "Auto", cx + 3, y + 2, 0xFFE6EAFF, false);
             hits.add(new Hit(cx, y, 26, size, auto));
             cx += 26 + gap;
         }
@@ -322,7 +326,7 @@ public final class ZyroEditorScreen extends Screen {
         return y + size + 6;
     }
 
-    private void pill(GuiGraphics g, int x, int y, boolean on, Runnable action) {
+    private void pill(Gfx g, int x, int y, boolean on, Runnable action) {
         int accent = Colors.opaque(cfg().accent);
         Draw.panel(g, x, y, 18, 9, on ? accent : 0xFF2A3042, true);
         int knob = on ? x + 10 : x + 1;
@@ -330,37 +334,37 @@ public final class ZyroEditorScreen extends Screen {
         hits.add(new Hit(x - 2, y - 2, 22, 13, action));
     }
 
-    private int toggle(GuiGraphics g, int x, int y, int w, String label, boolean value, Consumer<Boolean> set) {
+    private int toggle(Gfx g, int x, int y, int w, String label, boolean value, Consumer<Boolean> set) {
         boolean hover = inside(x, y, w, ROW);
         if (hover) Draw.panel(g, x - 2, y, w + 4, ROW, 0x10FFFFFF, true);
-        g.drawString(font, label, x + 2, y + 3, 0xFFD5DBF0, false);
+        g.text(font, label, x + 2, y + 3, 0xFFD5DBF0, false);
         pill(g, x + w - 20, y + 2, value, () -> set.accept(!value));
         hits.add(new Hit(x, y, w - 24, ROW, () -> set.accept(!value)));
         return y + ROW + 1;
     }
 
-    private int stepper(GuiGraphics g, int x, int y, int w, String label, String value, Runnable minus, Runnable plus) {
-        g.drawString(font, label, x + 2, y + 3, 0xFFD5DBF0, false);
+    private int stepper(Gfx g, int x, int y, int w, String label, String value, Runnable minus, Runnable plus) {
+        g.text(font, label, x + 2, y + 3, 0xFFD5DBF0, false);
         int bx = x + w - 54;
         smallButton(g, bx, y, "-", minus);
         int vw = font.width(value);
-        g.drawString(font, value, bx + 27 - vw / 2, y + 3, 0xFFFFFFFF, false);
+        g.text(font, value, bx + 27 - vw / 2, y + 3, 0xFFFFFFFF, false);
         smallButton(g, bx + 42, y, "+", plus);
         return y + ROW + 1;
     }
 
-    private void smallButton(GuiGraphics g, int x, int y, String label, Runnable action) {
+    private void smallButton(Gfx g, int x, int y, String label, Runnable action) {
         boolean hover = inside(x, y, 12, ROW - 1);
         Draw.panel(g, x, y, 12, ROW - 1, hover ? 0x33FFFFFF : 0x18FFFFFF, true);
-        g.drawString(font, label, x + 6 - font.width(label) / 2, y + 2, 0xFFFFFFFF, false);
+        g.text(font, label, x + 6 - font.width(label) / 2, y + 2, 0xFFFFFFFF, false);
         hits.add(new Hit(x, y, 12, ROW - 1, action));
     }
 
-    private int button(GuiGraphics g, int x, int y, int w, String label, Runnable action) {
+    private int button(Gfx g, int x, int y, int w, String label, Runnable action) {
         boolean hover = inside(x, y, w, ROW + 2);
         int accent = Colors.opaque(cfg().accent);
         Draw.panel(g, x, y, w, ROW + 2, hover ? Colors.withAlpha(accent, 90) : Colors.withAlpha(accent, 40), true);
-        g.drawString(font, label, x + (w - font.width(label)) / 2, y + 4, 0xFFFFFFFF, false);
+        g.text(font, label, x + (w - font.width(label)) / 2, y + 4, 0xFFFFFFFF, false);
         hits.add(new Hit(x, y, w, ROW + 2, action));
         return y + ROW + 6;
     }

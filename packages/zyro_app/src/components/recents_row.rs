@@ -158,7 +158,17 @@ impl Component for ClusterCard {
             format!("{} {}", self.cluster.mc_version, self.cluster.mc_loader)
         };
         // Zyro cards: a small loader chip over a big version number.
-        let (chip, headline) = if self.cluster.user_created {
+        let zyro = !self.cluster.user_created
+            && zyro_core::game::zyro_runtime::is_zyro_version(
+                self.cluster.mc_loader,
+                &self.cluster.mc_version,
+            );
+        let (chip, headline) = if zyro {
+            (
+                zyro_core::game::zyro_runtime::ZYRO_PRODUCT_NAME.to_string(),
+                self.cluster.mc_version.clone(),
+            )
+        } else if self.cluster.user_created {
             (
                 format!("{} {}", self.cluster.mc_version, self.cluster.mc_loader),
                 self.cluster.name.clone(),

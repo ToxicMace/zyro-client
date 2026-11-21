@@ -4,11 +4,11 @@ import dev.zyro.client.config.ElementConfig;
 import dev.zyro.client.config.HudConfig;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.GuiGraphics;
+import dev.zyro.client.compat.Gfx;
 
 /** Everything an element needs for one frame, with its colors already resolved. */
 public final class Ctx {
-    public final GuiGraphics g;
+    public final Gfx g;
     public final Minecraft mc;
     public final Font font;
     public final HudConfig cfg;
@@ -19,7 +19,7 @@ public final class Ctx {
     public final boolean preview;
     public final float dt;
 
-    public Ctx(GuiGraphics g, Minecraft mc, HudConfig cfg, ElementConfig ec, int index, boolean preview, float dt) {
+    public Ctx(Gfx g, Minecraft mc, HudConfig cfg, ElementConfig ec, int index, boolean preview, float dt) {
         this.g = g;
         this.mc = mc;
         this.font = mc.font;
@@ -34,7 +34,7 @@ public final class Ctx {
     }
 
     public void text(String s, int x, int y, int color) {
-        g.drawString(font, s, x, y, color, cfg.textShadow);
+        g.text(font, s, x, y, color, cfg.textShadow);
     }
 
     public int width(String s) {

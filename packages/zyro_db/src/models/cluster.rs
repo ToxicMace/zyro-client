@@ -32,7 +32,8 @@ impl ClusterKind {
     }
 
     pub fn uses_bundles(self) -> bool {
-        self == Self::OneClient
+        // Zyro: provisioned clusters get the Zyro runtime mods, not Polyfrost bundles.
+        false
     }
 }
 

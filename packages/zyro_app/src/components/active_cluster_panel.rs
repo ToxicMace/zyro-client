@@ -78,7 +78,14 @@ impl Component for ActiveClusterPanel {
         };
 
         let version = format!("{} {}", cluster.mc_version, cluster.mc_loader);
-        let (title, subtitle) = if cluster.user_created && cluster.kind != ClusterKind::OneClient {
+        let zyro = !cluster.user_created
+            && zyro_core::game::zyro_runtime::is_zyro_version(cluster.mc_loader, &cluster.mc_version);
+        let (title, subtitle) = if zyro {
+            (
+                zyro_core::game::zyro_runtime::ZYRO_PRODUCT_NAME.to_string(),
+                format!("Minecraft {}", cluster.mc_version),
+            )
+        } else if cluster.user_created && cluster.kind != ClusterKind::OneClient {
             (cluster.name.clone(), version)
         } else {
             let mut parts = vec!["Zyro".to_string()];

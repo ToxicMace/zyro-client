@@ -452,7 +452,7 @@ async fn start(
     }
 
     let zyro_hud_enabled = state.settings.read().zyro_hud_enabled;
-    if let Some(arg) = crate::game::zyro_hud::jvm_argument(
+    if let Some(arg) = crate::game::zyro_runtime::jvm_argument(
         zyro_hud_enabled,
         cluster.mc_loader,
         &mc_version,
@@ -460,7 +460,7 @@ async fn start(
     )
     .await
     {
-        tracing::info!(cluster_id, "loading Zyro HUD");
+        tracing::info!(cluster_id, "loading Zyro Client runtime");
         jvm_args.push(arg);
     }
 

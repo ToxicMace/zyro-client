@@ -13,7 +13,7 @@ public final class Zoom {
     private Zoom() {}
 
     public static void tick(Minecraft mc) {
-        boolean want = ZyroClient.CONFIG.zoomEnabled && mc.screen == null && ZyroClient.zoomKey.isDown();
+        boolean want = ZyroClient.CONFIG.zoomEnabled && dev.zyro.client.compat.Compat.screen(mc) == null && ZyroClient.zoomKey.isDown();
         if (want != zooming) {
             zooming = want;
             if (ZyroClient.CONFIG.zoomSmoothCamera) {

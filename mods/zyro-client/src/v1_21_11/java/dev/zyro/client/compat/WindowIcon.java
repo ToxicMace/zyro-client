@@ -1,4 +1,4 @@
-package dev.zyro.client.window;
+package dev.zyro.client.compat;
 
 import dev.zyro.client.ZyroClient;
 import net.minecraft.client.Minecraft;
@@ -15,11 +15,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 /** Swaps the game window icon for the Zyro mark (the title is handled by a mixin). */
-public final class WindowBranding {
+final class WindowIcon {
     private static final String[] ICONS = {"/assets/zyro/window/icon_16.png", "/assets/zyro/window/icon_32.png",
             "/assets/zyro/window/icon_48.png", "/assets/zyro/window/icon_128.png"};
 
-    private WindowBranding() {}
+    private WindowIcon() {}
 
     public static void apply(Minecraft mc) {
         try {
@@ -37,7 +37,7 @@ public final class WindowBranding {
             GLFWImage.Buffer images = GLFWImage.malloc(ICONS.length, stack);
             int count = 0;
             for (String path : ICONS) {
-                try (InputStream in = WindowBranding.class.getResourceAsStream(path)) {
+                try (InputStream in = WindowIcon.class.getResourceAsStream(path)) {
                     if (in == null) continue;
                     byte[] bytes = in.readAllBytes();
                     ByteBuffer file = MemoryUtil.memAlloc(bytes.length);

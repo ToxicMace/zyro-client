@@ -7,7 +7,7 @@ import dev.zyro.client.element.Elements;
 import dev.zyro.client.element.HudElement;
 import dev.zyro.client.element.KeystrokesElement;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import dev.zyro.client.compat.Gfx;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,15 +27,15 @@ public final class HudRenderer {
         return elements;
     }
 
-    public List<Placed> render(GuiGraphics g, boolean editor) {
+    public List<Placed> render(Gfx g, boolean editor) {
         Minecraft mc = Minecraft.getInstance();
         HudConfig cfg = ZyroClient.CONFIG;
         long now = System.nanoTime();
         float dt = Math.min(0.1f, (now - lastNanos) / 1_000_000_000f);
         lastNanos = now;
 
-        int screenW = g.guiWidth();
-        int screenH = g.guiHeight();
+        int screenW = g.width();
+        int screenH = g.height();
         List<Placed> placed = new ArrayList<>();
 
         for (int i = 0; i < elements.size(); i++) {
@@ -56,9 +56,9 @@ public final class HudRenderer {
             int x = Math.clamp(Math.round((float) ec.x * screenW), 0, Math.max(0, screenW - sw));
             int y = Math.clamp(Math.round((float) ec.y * screenH), 0, Math.max(0, screenH - sh));
 
-            g.pose().pushMatrix();
-            g.pose().translate((float) x, (float) y);
-            g.pose().scale(scale, scale);
+            g.push();
+            g.translate((float) x, (float) y);
+            g.scale(scale, scale);
             if (ec.background && !(el instanceof KeystrokesElement)) {
                 Draw.panel(g, 0, 0, size[0], size[1], cfg.backgroundArgb(), cfg.roundedCorners);
                 if (cfg.accentBar) {
@@ -66,7 +66,7 @@ public final class HudRenderer {
                 }
             }
             el.draw(ctx, size[0], size[1]);
-            g.pose().popMatrix();
+            g.pop();
 
             if (editor && !ec.enabled) {
                 g.fill(x, y, x + sw, y + sh, 0xB0000000);

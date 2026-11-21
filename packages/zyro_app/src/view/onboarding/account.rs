@@ -44,7 +44,8 @@ impl Component for OnboardingAccount {
             content,
             onboarding_nav(
                 Some(Route::OnboardingLanguage {}),
-                Route::OnboardingBundles {},
+                // Zyro has no Polyfrost bundle step
+                Route::OnboardingPreferences {},
                 has_account,
             ),
         );

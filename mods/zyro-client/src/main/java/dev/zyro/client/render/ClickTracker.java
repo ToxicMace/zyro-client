@@ -1,13 +1,13 @@
 package dev.zyro.client.render;
 
+import dev.zyro.client.compat.Compat;
 import net.minecraft.client.Minecraft;
-import org.lwjgl.glfw.GLFW;
 
 import java.util.ArrayDeque;
 
 /**
- * Counts clicks per second by watching mouse button edges every rendered frame.
- * No mixins needed, and at any playable framerate a click is never missed.
+ * Counts clicks per second from the attack/use key states, sampled every rendered frame.
+ * Works the same on GLFW (1.21.x) and SDL (26.x) builds, and follows the player's key binds.
  */
 public final class ClickTracker {
     private static final ArrayDeque<Long> LEFT = new ArrayDeque<>();
@@ -18,12 +18,11 @@ public final class ClickTracker {
     private ClickTracker() {}
 
     public static void sample(Minecraft mc) {
-        long window = mc.getWindow().handle();
         long now = System.currentTimeMillis();
-        boolean inGame = mc.screen == null;
+        boolean inGame = Compat.screen(mc) == null;
 
-        boolean l = GLFW.glfwGetMouseButton(window, GLFW.GLFW_MOUSE_BUTTON_LEFT) == GLFW.GLFW_PRESS;
-        boolean r = GLFW.glfwGetMouseButton(window, GLFW.GLFW_MOUSE_BUTTON_RIGHT) == GLFW.GLFW_PRESS;
+        boolean l = mc.options.keyAttack.isDown();
+        boolean r = mc.options.keyUse.isDown();
         if (inGame && l && !leftDown) LEFT.addLast(now);
         if (inGame && r && !rightDown) RIGHT.addLast(now);
         leftDown = l;

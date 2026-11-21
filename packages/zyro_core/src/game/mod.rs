@@ -14,7 +14,7 @@ mod session;
 mod shared_dir;
 mod tail;
 mod thread_dump;
-pub mod zyro_hud;
+pub mod zyro_runtime;
 
 pub use analytics::{
     Analytics, DayPlaytime, Persona, PlaytimeStats, ServerStat, WEEKDAY_LABELS, aggregate_servers,

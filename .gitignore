@@ -10,3 +10,7 @@ OneLauncher.iml
 mods/zyro-hud/build/
 mods/zyro-hud/.gradle/
 
+
+mods/**/.gradle/
+mods/**/build/
+mods/**/run/

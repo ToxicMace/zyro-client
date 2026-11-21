@@ -10,10 +10,26 @@ base {
 	archivesName = project.archives_base_name
 }
 
+loom {
+	// 26.x keeps client-only classes (GuiGraphics, LWJGL...) in a separate source set.
+	splitEnvironmentSourceSets()
+
+	mods {
+		"zyro" {
+			sourceSet sourceSets.main
+			sourceSet sourceSets.client
+		}
+	}
+}
+
 sourceSets {
 	main {
-		java.srcDirs = ['../src/main/java', '../src/v26_3/java']
+		java.srcDirs = []
 		resources.srcDirs = ['../src/main/resources']
+	}
+	client {
+		java.srcDirs = ['../src/main/java', '../src/v26_3/java']
+		resources.srcDirs = []
 	}
 }
 

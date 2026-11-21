@@ -4,8 +4,9 @@
   "package": "dev.zyro.client.mixin",
   "compatibilityLevel": "JAVA_21",
   "client": [
-    "MinecraftMixin",
-    "GameRendererMixin"
+    "TitleMixin",
+    "ScreenSwapMixin",
+    "ZoomMixin"
   ],
   "injectors": {
     "defaultRequire": 1

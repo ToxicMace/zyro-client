@@ -27,7 +27,8 @@ pub const POLYPLUS: EssentialPackage = EssentialPackage {
     remove_body: || t("oneclient.essential.polyplus.remove_body"),
 };
 
-pub const ESSENTIAL_PACKAGES: &[EssentialPackage] = &[POLYPLUS];
+// Zyro ships no Poly+ essentials; the Zyro Client mod is loaded by the launcher instead.
+pub const ESSENTIAL_PACKAGES: &[EssentialPackage] = &[];
 
 pub fn lookup(provider: ProviderId, package_id: &str) -> Option<&'static EssentialPackage> {
     ESSENTIAL_PACKAGES

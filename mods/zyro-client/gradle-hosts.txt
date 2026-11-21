@@ -1,0 +1,15 @@
+# JVM-only hosts file for Gradle (jdk.net.hosts.file). Works around ISP blocks of some Cloudflare IPs.
+104.16.0.1 maven.fabricmc.net
+104.16.0.1 meta.fabricmc.net
+104.18.18.12 repo.maven.apache.org
+104.18.19.12 repo1.maven.org
+104.16.73.101 plugins.gradle.org
+104.16.72.101 plugins-artifacts.gradle.org
+104.16.72.101 services.gradle.org
+104.16.72.101 downloads.gradle.org
+150.171.109.82 piston-meta.mojang.com
+150.171.109.82 piston-data.mojang.com
+150.171.109.82 launchermeta.mojang.com
+150.171.109.82 launcher.mojang.com
+150.171.109.82 libraries.minecraft.net
+150.171.109.82 resources.download.minecraft.net

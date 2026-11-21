@@ -41,7 +41,7 @@ use crate::theme::{colors, rounded, text_size};
 use crate::ui::{border_all_color, entrance_motion_layer};
 
 pub fn onboarding_total(has_migration: bool, picks_location: bool) -> usize {
-    7 + usize::from(has_migration) + usize::from(picks_location)
+    6 + usize::from(has_migration) + usize::from(picks_location)
 }
 
 pub fn onboarding_step_index(route: &Route, has_migration: bool, picks_location: bool) -> usize {
@@ -56,8 +56,8 @@ pub fn onboarding_step_index(route: &Route, has_migration: bool, picks_location:
         Route::OnboardingLanguage {} => 2 + shift,
         Route::OnboardingAccount {} => 3 + shift,
         Route::OnboardingBundles {} => 4 + shift,
-        Route::OnboardingPreferences {} => 5 + shift,
-        Route::OnboardingSummary {} => 6 + shift,
+        Route::OnboardingPreferences {} => 4 + shift,
+        Route::OnboardingSummary {} => 5 + shift,
         _ => 0,
     }
 }
@@ -358,7 +358,6 @@ mod tests {
         routes.extend([
             Route::OnboardingLanguage {},
             Route::OnboardingAccount {},
-            Route::OnboardingBundles {},
             Route::OnboardingPreferences {},
             Route::OnboardingSummary {},
         ]);

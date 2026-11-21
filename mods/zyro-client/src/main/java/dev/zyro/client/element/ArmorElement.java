@@ -65,7 +65,7 @@ public final class ArmorElement extends HudElement {
         int x = p + barInset(ctx);
         int y = p;
         for (ItemStack s : stacks(ctx)) {
-            ctx.g.renderItem(s, x, y);
+            ctx.g.item(s, x, y);
             String d = durability(s);
             if (!d.isEmpty()) {
                 int color = ctx.text;

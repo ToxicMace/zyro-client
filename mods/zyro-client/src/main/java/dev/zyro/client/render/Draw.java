@@ -1,12 +1,12 @@
 package dev.zyro.client.render;
 
-import net.minecraft.client.gui.GuiGraphics;
+import dev.zyro.client.compat.Gfx;
 
 public final class Draw {
     private Draw() {}
 
     /** Filled rect with optional 1px "soft" corners, which reads as rounded at HUD scale. */
-    public static void panel(GuiGraphics g, int x, int y, int w, int h, int color, boolean rounded) {
+    public static void panel(Gfx g, int x, int y, int w, int h, int color, boolean rounded) {
         if (w <= 0 || h <= 0 || (color >>> 24) == 0) {
             return;
         }
@@ -19,7 +19,7 @@ public final class Draw {
         g.fill(x + w - 1, y + 1, x + w, y + h - 1, color);
     }
 
-    public static void outline(GuiGraphics g, int x, int y, int w, int h, int color) {
+    public static void outline(Gfx g, int x, int y, int w, int h, int color) {
         g.fill(x, y, x + w, y + 1, color);
         g.fill(x, y + h - 1, x + w, y + h, color);
         g.fill(x, y + 1, x + 1, y + h - 1, color);

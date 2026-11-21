@@ -375,26 +375,16 @@ fn keep_fetched<T>(slot: &mut Option<T>, fetched: McResult<T>) {
     }
 }
 
+/// Zyro: vanilla metadata comes straight from Mojang. No third-party mirror.
 #[tracing::instrument(level = "debug", skip_all)]
 async fn fetch_vanilla_manifest(ctx: &McCtx) -> McResult<VanillaManifest> {
-    match fetch_manifest::<VanillaManifest>(ctx, GameLoader::Vanilla).await {
-        Ok(manifest) => Ok(manifest),
-        Err(err) => {
-            tracing::warn!(
-                "failed to fetch vanilla manifest from metadata mirror: {err}; falling back to Mojang"
-            );
-
-            {
-                let url = interfrost::api::minecraft::VERSION_MANIFEST_URL
-                    .parse()
-                    .map_err(McError::Url)?;
-                ctx.net
-                    .send_json(Method::GET, url, None, &[])
-                    .await
-                    .map_err(McError::from)
-            }
-        }
-    }
+    let url = interfrost::api::minecraft::VERSION_MANIFEST_URL
+        .parse()
+        .map_err(McError::Url)?;
+    ctx.net
+        .send_json(Method::GET, url, None, &[])
+        .await
+        .map_err(McError::from)
 }
 
 #[tracing::instrument(level = "debug", skip_all)]
@@ -402,20 +392,66 @@ async fn fetch_modded_manifest(ctx: &McCtx, loader: GameLoader) -> McResult<Modd
     fetch_manifest(ctx, loader).await
 }
 
+/// Official Fabric metadata service.
+const FABRIC_META: &str = "https://meta.fabricmc.net/v2";
+/// Loader builds offered per game version (newest first).
+const FABRIC_LOADERS_PER_GAME: usize = 6;
+
+#[derive(Deserialize)]
+struct FabricGame {
+    version: String,
+    stable: bool,
+}
+
+#[derive(Deserialize)]
+struct FabricLoader {
+    version: String,
+    stable: bool,
+}
+
+/// Zyro is a Fabric client: Fabric metadata is built from the official Fabric meta service,
+/// other loaders get an empty manifest (nothing is fetched from any mirror).
 #[tracing::instrument(level = "debug", skip_all)]
 async fn fetch_manifest<T: DeserializeOwned>(ctx: &McCtx, loader: GameLoader) -> McResult<T> {
-    let url = format!(
-        "{}/{}/v{}/manifest.json",
-        ctx.net.config().metadata_api_url,
-        loader.get_format_name(),
-        loader.get_format_version()
-    );
+    let value = if loader == GameLoader::Fabric {
+        let games_url = format!("{FABRIC_META}/versions/game").parse().map_err(McError::Url)?;
+        let loaders_url = format!("{FABRIC_META}/versions/loader").parse().map_err(McError::Url)?;
+        let games: Vec<FabricGame> = ctx
+            .net
+            .send_json(Method::GET, games_url, None, &[])
+            .await
+            .map_err(McError::from)?;
+        let loaders: Vec<FabricLoader> = ctx
+            .net
+            .send_json(Method::GET, loaders_url, None, &[])
+            .await
+            .map_err(McError::from)?;
+        let picked: Vec<&FabricLoader> = loaders.iter().take(FABRIC_LOADERS_PER_GAME).collect();
+        let game_versions: Vec<serde_json::Value> = games
+            .iter()
+            .map(|game| {
+                let loaders: Vec<serde_json::Value> = picked
+                    .iter()
+                    .map(|l| {
+                        serde_json::json!({
+                            "id": l.version,
+                            "url": format!(
+                                "{FABRIC_META}/versions/loader/{}/{}/profile/json",
+                                game.version, l.version
+                            ),
+                            "stable": l.stable,
+                        })
+                    })
+                    .collect();
+                serde_json::json!({ "id": game.version, "stable": game.stable, "loaders": loaders })
+            })
+            .collect();
+        serde_json::json!({ "gameVersions": game_versions })
+    } else {
+        serde_json::json!({ "gameVersions": [] })
+    };
 
-    let parsed = url.parse().map_err(McError::Url)?;
-    ctx.net
-        .send_json(Method::GET, parsed, None, &[])
-        .await
-        .map_err(McError::from)
+    serde_json::from_value(value).map_err(|_| McError::FetchError)
 }
 
 #[cfg(test)]
