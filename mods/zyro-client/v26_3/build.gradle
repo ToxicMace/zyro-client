@@ -1,0 +1,43 @@
+// Zyro Client for Minecraft 26.3 (unobfuscated game, no remapping).
+plugins {
+	id 'net.fabricmc.fabric-loom' version "${loom_version}"
+}
+
+version = "${project.mod_version}+${project.minecraft_version}"
+group = project.maven_group
+
+base {
+	archivesName = project.archives_base_name
+}
+
+sourceSets {
+	main {
+		java.srcDirs = ['../src/main/java', '../src/v26_3/java']
+		resources.srcDirs = ['../src/main/resources']
+	}
+}
+
+dependencies {
+	minecraft "com.mojang:minecraft:${project.minecraft_version}"
+	implementation "net.fabricmc:fabric-loader:${project.loader_version}"
+	implementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_api_version}"
+}
+
+processResources {
+	def props = [version: project.version, mc_dep: project.mc_dep, java: project.java_version]
+	inputs.properties props
+	filesMatching("fabric.mod.json") {
+		expand props
+	}
+}
+
+tasks.withType(JavaCompile).configureEach {
+	it.options.release = project.java_version as int
+	it.options.encoding = "UTF-8"
+}
+
+jar {
+	from("../LICENSE") {
+		rename { "${it}_${project.archives_base_name}" }
+	}
+}

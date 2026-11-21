@@ -1,6 +1,6 @@
 [package]
 name = "zyro_app"
-description = "OneClient Freya App"
+description = "Zyro Client"
 version = { workspace = true }
 license = { workspace = true }
 edition = { workspace = true }
@@ -97,13 +97,13 @@ windows = { version = "=0.62.2", features = [
 winresource = "=0.1.31"
 
 [package.metadata.packager]
-product-name = "OneClient"
-identifier = "org.polyfrost.OneClient"
+product-name = "Zyro Client"
+identifier = "org.zyro.ZyroClient"
 category = "Game"
-publisher = "Polyfrost Inc."
-copyright = "© 2026 Polyfrost Inc."
-homepage = "https://polyfrost.org/projects/oneclient"
-long-description = "Next-generation open source Minecraft launcher"
+publisher = "Zyro"
+copyright = "© 2026 Zyro. Based on OneLauncher by Polyfrost (GPL-3.0)"
+homepage = "https://github.com/Polyfrost/OneLauncher"
+long-description = "Clean, smooth and fully themeable Minecraft client"
 formats = ["nsis", "app", "dmg", "deb", "appimage"]
 binaries = [{ path = "zyro_app", main = true }]
 icons = [
@@ -115,7 +115,6 @@ icons = [
   "icons/icon.ico",
 ]
 resources = [
-  { src = "icons/generated/Assets.car", target = "Assets.car" },
   # >>> CRT_RESOURCES >>>
   # <<< CRT_RESOURCES <<<
 ]
@@ -137,13 +136,6 @@ timestamp-url = "https://timestamp.digicert.com"
 
 [package.metadata.packager.nsis]
 preinstall-section = """
-Section "-OneClientTauriMigration"
-  ; Stale Tauri root start-menu shortcut (this build only writes the sub-folder one).
-  Delete "$SMPROGRAMS\\${PRODUCTNAME}.lnk"
-  ; Old Tauri main binary (renamed OneClient.exe -> zyro_app.exe). Locked while
-  ; the outdated app is running during an auto-update, so fall back to reboot removal.
-  Delete /REBOOTOK "$INSTDIR\\OneClient.exe"
-SectionEnd
 
 ; >>> VC_REDIST_SECTION >>>
 Section "-VCRedist"
@@ -158,7 +150,7 @@ Section "-VCRedist"
   ${EndIf}
 
   ${If} $PassiveMode != 1
-    MessageBox MB_OK|MB_ICONEXCLAMATION "This build of OneClient needs the Microsoft Visual C++ Redistributable (x64) 14.40 or newer. Install it from https://aka.ms/vs/17/release/vc_redist.x64.exe, then run this installer again."
+    MessageBox MB_OK|MB_ICONEXCLAMATION "This build of Zyro Client needs the Microsoft Visual C++ Redistributable (x64) 14.40 or newer. Install it from https://aka.ms/vs/17/release/vc_redist.x64.exe, then run this installer again."
   ${EndIf}
 
   vcredist_done:

@@ -1,0 +1,21 @@
+{
+  "schemaVersion": 1,
+  "id": "zyro",
+  "version": "${version}",
+  "name": "Zyro Client",
+  "description": "The Zyro Client experience: own main menu, window branding, themeable HUD (FPS, CPS, keystrokes, coords, armor, ping, speed, clock), zoom and quality-of-life modules. Right Shift opens Zyro settings.",
+  "authors": ["Zyro"],
+  "license": "GPL-3.0-only",
+  "icon": "assets/zyro/icon.png",
+  "environment": "client",
+  "entrypoints": {
+    "client": ["dev.zyro.client.ZyroClient"]
+  },
+  "mixins": ["zyro.mixins.json"],
+  "depends": {
+    "fabricloader": ">=0.17.0",
+    "minecraft": "${mc_dep}",
+    "java": ">=${java}",
+    "fabric-api": "*"
+  }
+}
