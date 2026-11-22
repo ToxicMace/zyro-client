@@ -1,5 +1,8 @@
 package dev.zyro.client.screen;
 
+// Mouse button ids differ per version (GLFW 0/1 on 1.21.x, SDL 1/3 on 26.x): always use the constants.
+import com.mojang.blaze3d.platform.InputConstants;
+
 import dev.zyro.client.ZyroClient;
 import dev.zyro.client.render.Colors;
 import dev.zyro.client.render.Draw;
@@ -147,7 +150,7 @@ public final class ZyroTitleScreen extends ZyroScreenBase {
 
     @Override
     public boolean mouseClicked(MouseButtonEvent event, boolean doubleClick) {
-        if (event.button() == 0) {
+        if (event.button() == InputConstants.MOUSE_BUTTON_LEFT) {
             int x = menuX();
             int top = menuTop();
             for (int i = 0; i < entries.size(); i++) {

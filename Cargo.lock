@@ -4980,7 +4980,7 @@ checksum = "2f3a9f18d041e6d0e102a0a46750538147e5e8992d3b4873aaafee2520b00ce3"
 
 [[package]]
 name = "polyio"
-version = "1.0.0"
+version = "1.0.1"
 dependencies = [
  "astral-tokio-tar",
  "async-compression",
@@ -8748,7 +8748,7 @@ dependencies = [
 
 [[package]]
 name = "zyro_app"
-version = "1.0.0"
+version = "1.0.1"
 dependencies = [
  "accesskit",
  "anyhow",
@@ -8805,7 +8805,7 @@ dependencies = [
 
 [[package]]
 name = "zyro_auth"
-version = "1.0.0"
+version = "1.0.1"
 dependencies = [
  "base64 0.23.1",
  "chrono",
@@ -8829,7 +8829,7 @@ dependencies = [
 
 [[package]]
 name = "zyro_cluster"
-version = "1.0.0"
+version = "1.0.1"
 dependencies = [
  "bytes 1.12.1",
  "chrono",
@@ -8853,7 +8853,7 @@ dependencies = [
 
 [[package]]
 name = "zyro_common"
-version = "1.0.0"
+version = "1.0.1"
 dependencies = [
  "directories",
  "interfrost",
@@ -8866,7 +8866,7 @@ dependencies = [
 
 [[package]]
 name = "zyro_content"
-version = "1.0.0"
+version = "1.0.1"
 dependencies = [
  "async-trait",
  "async_zip",
@@ -8894,7 +8894,7 @@ dependencies = [
 
 [[package]]
 name = "zyro_core"
-version = "1.0.0"
+version = "1.0.1"
 dependencies = [
  "async-compression",
  "async-stream",
@@ -8959,7 +8959,7 @@ dependencies = [
 
 [[package]]
 name = "zyro_db"
-version = "1.0.0"
+version = "1.0.1"
 dependencies = [
  "async-tempfile",
  "chrono",
@@ -8974,7 +8974,7 @@ dependencies = [
 
 [[package]]
 name = "zyro_discord"
-version = "1.0.0"
+version = "1.0.1"
 dependencies = [
  "chrono",
  "discord-rich-presence",
@@ -8986,7 +8986,7 @@ dependencies = [
 
 [[package]]
 name = "zyro_events"
-version = "1.0.0"
+version = "1.0.1"
 dependencies = [
  "thiserror 2.0.21",
  "tokio",
@@ -8996,7 +8996,7 @@ dependencies = [
 
 [[package]]
 name = "zyro_java"
-version = "1.0.0"
+version = "1.0.1"
 dependencies = [
  "astral-tokio-tar",
  "async-tempfile",
@@ -9019,7 +9019,7 @@ dependencies = [
 
 [[package]]
 name = "zyro_macro"
-version = "1.0.0"
+version = "1.0.1"
 dependencies = [
  "proc-macro2",
  "quote",
@@ -9028,7 +9028,7 @@ dependencies = [
 
 [[package]]
 name = "zyro_mc"
-version = "1.0.0"
+version = "1.0.1"
 dependencies = [
  "base64 0.23.1",
  "chrono",
@@ -9050,7 +9050,7 @@ dependencies = [
 
 [[package]]
 name = "zyro_net"
-version = "1.0.0"
+version = "1.0.1"
 dependencies = [
  "arc-swap",
  "async-trait",
@@ -9072,7 +9072,7 @@ dependencies = [
 
 [[package]]
 name = "zyro_polyplus"
-version = "1.0.0"
+version = "1.0.1"
 dependencies = [
  "async-tungstenite 0.35.0",
  "bytes 1.12.1",

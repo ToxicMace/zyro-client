@@ -360,6 +360,11 @@ impl BundlesManager {
     /// `sync` commits it once all land
     #[tracing::instrument(level = "debug", skip(ctx))]
     async fn fetch_manifest(ctx: &ContentCtx) -> ContentResult<Option<FetchedManifest>> {
+        // Zyro ships no remote bundle catalog (upstream's came from Polyfrost).
+        if true {
+            let _ = ctx;
+            return Ok(None);
+        }
         let manifest_path = paths::bundles_dir()?.join("metadata.json");
         let url = format!(
             "{}/oneclient/bundles/metadata.json",

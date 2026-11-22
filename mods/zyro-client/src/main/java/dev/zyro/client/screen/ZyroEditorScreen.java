@@ -1,5 +1,8 @@
 package dev.zyro.client.screen;
 
+// Mouse button ids differ per version (GLFW 0/1 on 1.21.x, SDL 1/3 on 26.x): always use the constants.
+import com.mojang.blaze3d.platform.InputConstants;
+
 import dev.zyro.client.ZyroClient;
 import dev.zyro.client.config.ElementConfig;
 import dev.zyro.client.config.HudConfig;
@@ -390,11 +393,11 @@ public final class ZyroEditorScreen extends ZyroScreenBase {
             Placed p = placed.get(i);
             if (p.contains(mx, my)) {
                 selected = p.element().id;
-                if (event.button() == 0) {
+                if (event.button() == InputConstants.MOUSE_BUTTON_LEFT) {
                     dragging = p.element().id;
                     dragOffX = mx - p.x();
                     dragOffY = my - p.y();
-                } else if (event.button() == 1) {
+                } else if (event.button() == InputConstants.MOUSE_BUTTON_RIGHT) {
                     p.config().enabled = !p.config().enabled;
                     cfg().save();
                 }

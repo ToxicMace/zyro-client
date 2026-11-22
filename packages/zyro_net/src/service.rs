@@ -1,4 +1,6 @@
+use std::net::{IpAddr, Ipv4Addr, SocketAddr};
 use std::sync::Arc;
+use std::sync::atomic::{AtomicBool, Ordering};
 
 use arc_swap::ArcSwap;
 use zyro_events::EventBus;
@@ -76,10 +78,35 @@ fn apply_curseforge_auth(
     Ok(())
 }
 
+/// Some ISPs (notably in Spain during football matches) block whole Cloudflare IP ranges and
+/// answer with a forged certificate. These hosts sit behind Cloudflare, which serves them from
+/// any of its anycast addresses, so when the normal connection fails we retry through one of
+/// these. TLS is still fully verified, so this only ever reaches the genuine server.
+const CLOUDFLARE_FALLBACK_HOSTS: &[&str] = &[
+    "meta.fabricmc.net",
+    "maven.fabricmc.net",
+    "api.modrinth.com",
+    "cdn.modrinth.com",
+];
+const CLOUDFLARE_FALLBACK_ADDRS: [Ipv4Addr; 3] = [
+    Ipv4Addr::new(104, 16, 0, 1),
+    Ipv4Addr::new(104, 17, 0, 1),
+    Ipv4Addr::new(104, 18, 0, 1),
+];
+/// Once a block has been seen, later requests go straight through the fallback.
+static CLOUDFLARE_BLOCKED: AtomicBool = AtomicBool::new(false);
+
+fn uses_cloudflare_fallback(url: &reqwest::Url) -> bool {
+    url.host_str()
+        .is_some_and(|host| CLOUDFLARE_FALLBACK_HOSTS.contains(&host))
+}
+
 #[derive(Clone)]
 pub struct RequestClient {
     client: reqwest::Client,
     http1: reqwest::Client,
+    /// Same settings, but Cloudflare-hosted services resolve to the fallback addresses.
+    unblocked: reqwest::Client,
     semaphore: Arc<Semaphore>,
     /// Shared across every clone so a settings save is visible to in-flight
     /// handles
@@ -118,10 +145,19 @@ impl RequestClient {
 
         let client = builder().build()?;
         let http1 = builder().http1_only().build()?;
+        let fallback_addrs: Vec<SocketAddr> = CLOUDFLARE_FALLBACK_ADDRS
+            .iter()
+            .map(|ip| SocketAddr::new(IpAddr::V4(*ip), 443))
+            .collect();
+        let unblocked = CLOUDFLARE_FALLBACK_HOSTS
+            .iter()
+            .fold(builder(), |b, host| b.resolve_to_addrs(host, &fallback_addrs))
+            .build()?;
 
         Ok(Self {
             client,
             http1,
+            unblocked,
             semaphore: Arc::new(Semaphore::new(MAX_INFLIGHT_REQUESTS)),
             config: Arc::new(ArcSwap::from_pointee(config)),
         })
@@ -153,6 +189,8 @@ impl RequestClient {
         };
 
         let mut active_request = request.request;
+        let cloudflare = uses_cloudflare_fallback(active_request.url());
+        let mut via_fallback = cloudflare && CLOUDFLARE_BLOCKED.load(Ordering::Relaxed);
 
         tracing::debug!(
             method = %active_request.method(),
@@ -167,7 +205,9 @@ impl RequestClient {
                 None
             };
 
-            let http = if request.options.own_connection {
+            let http = if via_fallback {
+                &self.unblocked
+            } else if request.options.own_connection {
                 &self.http1
             } else {
                 &self.client
@@ -194,9 +234,24 @@ impl RequestClient {
                         continue;
                     }
 
+                    if via_fallback && !CLOUDFLARE_BLOCKED.swap(true, Ordering::Relaxed) {
+                        tracing::warn!(
+                            url = %response.url(),
+                            "Cloudflare address blocked by the network; using the fallback route"
+                        );
+                    }
                     break response;
                 }
                 Err(err) => {
+                    if cloudflare && !via_fallback && cloneable && err.is_connect() {
+                        tracing::warn!(
+                            url = %err.url().map(ToString::to_string).unwrap_or_default(),
+                            "connection failed (possible ISP block); retrying via another Cloudflare address"
+                        );
+                        via_fallback = true;
+                        active_request = cloned_backup.as_ref().unwrap().try_clone().unwrap();
+                        continue;
+                    }
                     if request.options.own_connection
                         && cloneable
                         && err.is_connect()

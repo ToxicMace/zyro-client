@@ -214,6 +214,13 @@ pub(super) async fn fetch_flag_list<T: DeserializeOwned>(
     file_name: &str,
     ctx: &ContentCtx,
 ) -> ContentResult<T> {
+    // Zyro has no remote flag lists (upstream's came from Polyfrost): behave as offline.
+    if true {
+        let _ = ctx;
+        return Err(ContentError::InvalidData {
+            reason: format!("{file_name} is not provided by Zyro"),
+        });
+    }
     let url = format!("{}/oneclient/{file_name}", ctx.net.config().meta_url_base);
     let cache_path = paths::caches_dir()?.join(file_name);
 

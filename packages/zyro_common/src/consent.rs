@@ -25,9 +25,26 @@ pub fn declined() -> bool {
     DECLINED.load(Ordering::Relaxed)
 }
 
+/// Zyro never talks to the upstream project's servers (accounts, sync, social, metadata).
+/// Anything under polyfrost.org is refused before a connection is made.
+const UPSTREAM_DOMAIN: &str = "polyfrost.org";
+
+#[must_use]
+pub fn is_upstream_url(url: &str) -> bool {
+    url::Url::parse(url)
+        .ok()
+        .and_then(|parsed| {
+            parsed.host_str().map(|host| {
+                let host = host.trim_end_matches('.').to_ascii_lowercase();
+                host == UPSTREAM_DOMAIN || host.ends_with(&format!(".{UPSTREAM_DOMAIN}"))
+            })
+        })
+        .unwrap_or(false)
+}
+
 #[must_use]
 pub fn blocks_url(url: &str) -> bool {
-    declined() && is_gated_url(url)
+    is_upstream_url(url) || (declined() && is_gated_url(url))
 }
 
 #[must_use]
